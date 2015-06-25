@@ -1953,6 +1953,8 @@ public interface PropsKeys {
 
 	public static final String PORTLET_DISPLAY_TEMPLATES_HELP = "portlet.display.templates.help";
 
+	public static final String PORTLET_DISPLAY_TEMPLATES_ERROR = "portlet.display.templates.error";
+
 	public static final String PORTLET_EVENT_DISTRIBUTION = "portlet.event.distribution";
 
 	public static final String PORTLET_FILTERS_SYSTEM = "portlet.filters.system";
