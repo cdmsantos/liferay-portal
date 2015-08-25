@@ -211,6 +211,7 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 				"Invalid characters were defined for field type " +
 					ddmFormField.getType());
 		}
+		
 	}
 
 	protected void validateDDMFormLocales(DDMForm ddmForm)
