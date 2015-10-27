@@ -23,6 +23,8 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.rule.Sync;
+import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -35,6 +37,7 @@ import com.liferay.portal.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.security.permission.AdvancedPermissionChecker;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.security.permission.PermissionThreadLocal;
+import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PortalUtil;
 
@@ -53,19 +56,20 @@ import org.junit.runner.RunWith;
  * @author Rafael Praxedes
  */
 @RunWith(Arquillian.class)
+@Sync
 public class DDMTemplateServiceTest extends BaseDDMServiceTestCase {
 
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			SynchronousDestinationTestRule.INSTANCE);
 
 	@Before
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-
-		_childGroup = GroupTestUtil.addGroup(group.getGroupId());
 
 		_otherGroup = GroupTestUtil.addGroup();
 
@@ -138,6 +142,8 @@ public class DDMTemplateServiceTest extends BaseDDMServiceTestCase {
 
 	@Test
 	public void testGetTemplatesByIncludeAncestorTemplates() throws Exception {
+		Group childGroup = GroupTestUtil.addGroup(group.getGroupId());
+
 		DDMStructure ddmStructure = addStructure(
 			_recordSetClassNameId, StringUtil.randomString());
 
@@ -150,18 +156,20 @@ public class DDMTemplateServiceTest extends BaseDDMServiceTestCase {
 			WorkflowConstants.STATUS_ANY);
 
 		List<DDMTemplate> ddmTemplates = DDMTemplateServiceUtil.getTemplates(
-			TestPropsValues.getCompanyId(), _childGroup.getGroupId(),
+			TestPropsValues.getCompanyId(), childGroup.getGroupId(),
 			_structureClassNameId, ddmStructure.getStructureId(),
 			_recordSetClassNameId, true, WorkflowConstants.STATUS_ANY);
 
 		Assert.assertEquals(2, ddmTemplates.size());
 
 		ddmTemplates = DDMTemplateServiceUtil.getTemplates(
-			TestPropsValues.getCompanyId(), _childGroup.getGroupId(),
+			TestPropsValues.getCompanyId(), childGroup.getGroupId(),
 			_structureClassNameId, ddmStructure.getStructureId(),
 			_recordSetClassNameId, false, WorkflowConstants.STATUS_ANY);
 
 		Assert.assertEquals(0, ddmTemplates.size());
+
+		GroupLocalServiceUtil.deleteGroup(childGroup);
 	}
 
 	@Test
@@ -741,9 +749,6 @@ public class DDMTemplateServiceTest extends BaseDDMServiceTestCase {
 
 	private static long _recordSetClassNameId;
 	private static long _structureClassNameId;
-
-	@DeleteAfterTestRun
-	private Group _childGroup;
 
 	private String _originalName;
 	private PermissionChecker _originalPermissionChecker;
