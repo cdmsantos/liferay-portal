@@ -77,9 +77,38 @@ public class UpdateRecordSetSettingsMVCActionCommand
 
 		String successURL = ParamUtil.getString(actionRequest, "successURL");
 
+		boolean sendEmailNotification = ParamUtil.getBoolean(
+			actionRequest, "sendEmailNotification");
+
+		String emailFromName = ParamUtil.getString(
+			actionRequest, "emailFromName");
+
+		String emailFromAddress = ParamUtil.getString(
+			actionRequest, "emailFromAddress");
+
+		String emailToAddress = ParamUtil.getString(
+			actionRequest, "emailToAddress");
+
+		String emailSubject = ParamUtil.getString(
+			actionRequest, "emailSubject");
+
 		UnicodeProperties settingsProperties = new UnicodeProperties(true);
 
 		settingsProperties.setProperty("successURL", successURL);
+
+		settingsProperties.setProperty(
+			"sendEmailNotification", String.valueOf(sendEmailNotification));
+
+		if (sendEmailNotification) {
+			settingsProperties.setProperty("emailFromName", emailFromName);
+
+			settingsProperties.setProperty(
+				"emailFromAddress", emailFromAddress);
+
+			settingsProperties.setProperty("emailToAddress", emailToAddress);
+
+			settingsProperties.setProperty("emailSubject", emailSubject);
+		}
 
 		_ddlRecordSetService.updateRecordSet(
 			recordSetId, settingsProperties.toString());
