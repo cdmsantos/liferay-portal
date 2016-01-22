@@ -171,6 +171,12 @@ public class DDMFormRendererImpl implements DDMFormRenderer {
 		stringsMap.put("next", LanguageUtil.get(resourceBundle, "next"));
 		stringsMap.put(
 			"previous", LanguageUtil.get(resourceBundle, "previous"));
+		stringsMap.put(
+			"required", LanguageUtil.get(resourceBundle, "required"));
+		stringsMap.put(
+			"requiredFieldsWarningMessage",
+			LanguageUtil.get(
+				resourceBundle, "all-the-required-fields-are-marked-with"));
 
 		return stringsMap;
 	}
@@ -203,6 +209,11 @@ public class DDMFormRendererImpl implements DDMFormRenderer {
 		ddmFormRendererHelper.setDDMFormEvaluator(_ddmFormEvaluator);
 
 		return ddmFormRendererHelper.getRenderedDDMFormFieldsMap();
+	}
+
+	protected String getRequiredFieldsWarningMessage(Locale locale) {
+		return LanguageUtil.get(
+			locale, "all-fields-marked-with-x-are-required");
 	}
 
 	protected String getTemplateNamespace(DDMFormLayout ddmFormLayout) {
@@ -282,6 +293,14 @@ public class DDMFormRendererImpl implements DDMFormRenderer {
 		template.put(
 			"portletNamespace", ddmFormRenderingContext.getPortletNamespace());
 		template.put("readOnly", ddmFormRenderingContext.isReadOnly());
+
+		if (showRequiredFieldsWarning(ddmForm, ddmFormRenderingContext)) {
+			template.put("showRequiredFieldsWarning", true);
+		}
+		else {
+			template.put("showRequiredFieldsWarning", false);
+		}
+
 		template.put("strings", getLanguageStringsMap(locale));
 
 		String submitLabel = GetterUtil.getString(
@@ -353,6 +372,23 @@ public class DDMFormRendererImpl implements DDMFormRenderer {
 	@Reference(unbind = "-")
 	protected void setJSONFactory(JSONFactory jsonFactory) {
 		_jsonFactory = jsonFactory;
+	}
+
+	protected boolean showRequiredFieldsWarning(
+		DDMForm ddmForm, DDMFormRenderingContext ddmFormRenderingContext) {
+
+		if (ddmFormRenderingContext.isRenderRequiredFieldsWarning()) {
+			Map<String, DDMFormField> ddmFormFieldsMap =
+				ddmForm.getDDMFormFieldsMap(true);
+
+			for (DDMFormField ddmFormField : ddmFormFieldsMap.values()) {
+				if (ddmFormField.isRequired()) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	private DDM _ddm;
