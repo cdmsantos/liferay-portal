@@ -29,8 +29,8 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface SPAConfiguration {
 
 	@Meta.AD(
-		deflt = "-1", description = "spa.cache.expiration.description",
-		name = "spa.cache.expiration.name", required = true
+		deflt = "-1", description = "cache.expiration.time.description",
+		name = "cache.expiration.time.name", required = false
 	)
 	public String cacheExpirationTime();
 

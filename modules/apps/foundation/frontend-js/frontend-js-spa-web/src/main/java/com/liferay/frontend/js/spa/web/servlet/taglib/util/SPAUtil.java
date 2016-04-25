@@ -149,7 +149,7 @@ public class SPAUtil {
 		policy = ReferencePolicy.DYNAMIC,
 		policyOption = ReferencePolicyOption.GREEDY, unbind = "-"
 	)
-	protected void setDDLFormWebConfigurationActivator(
+	protected void setSPAConfigurationActivator(
 		SPAConfigurationActivator spaConfigurationActivator) {
 
 		_spaConfigurationActivator = spaConfigurationActivator;
