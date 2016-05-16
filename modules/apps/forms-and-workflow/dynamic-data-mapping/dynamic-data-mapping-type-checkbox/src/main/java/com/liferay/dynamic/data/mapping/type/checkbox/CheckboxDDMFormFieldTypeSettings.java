@@ -21,7 +21,6 @@ import com.liferay.dynamic.data.mapping.annotations.DDMFormLayoutColumn;
 import com.liferay.dynamic.data.mapping.annotations.DDMFormLayoutPage;
 import com.liferay.dynamic.data.mapping.annotations.DDMFormLayoutRow;
 import com.liferay.dynamic.data.mapping.form.field.type.DefaultDDMFormFieldTypeSettings;
-import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 
@@ -40,8 +39,7 @@ import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 						@DDMFormLayoutColumn(
 							size = 12,
 							value = {
-								"label", "tip", "required", "showAsSwitcher",
-								"options"
+								"label", "tip", "required", "showAsSwitcher"
 							}
 						)
 					}
@@ -59,7 +57,7 @@ import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 								"visibilityExpression", "predefinedValue",
 								"validation", "fieldNamespace", "indexType",
 								"localizable", "readOnly", "dataType", "type",
-								"name", "showLabel", "repeatable", "inline"
+								"name", "showLabel", "repeatable"
 							}
 						)
 					}
@@ -71,6 +69,13 @@ import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 public interface CheckboxDDMFormFieldTypeSettings
 	extends DefaultDDMFormFieldTypeSettings {
 
+	@DDMFormField(
+		dataType = "boolean", label = "%predefined-value",
+		properties = {"showAsSwitcher=true"}, type = "checkbox"
+	)
+	@Override
+	public LocalizedValue predefinedValue();
+
 	@DDMFormField(visibilityExpression = "FALSE")
 	@Override
 	public boolean repeatable();
@@ -80,15 +85,6 @@ public interface CheckboxDDMFormFieldTypeSettings
 		properties = {"showAsSwitcher=true"}, type = "checkbox"
 	)
 	public boolean showAsSwitcher();
-
-	@DDMFormField(label = "%inline", properties = {"showAsSwitcher=true"})
-	public boolean inline();
-
-	@DDMFormField(
-		dataType = "ddm-options", label = "%options", required = true,
-		type = "options"
-	)
-	public DDMFormFieldOptions options();
 
 	@DDMFormField(visibilityExpression = "FALSE")
 	@Override
