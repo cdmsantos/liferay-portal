@@ -14,9 +14,12 @@
 
 package com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.type;
 
+import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderTracker;
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
+import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldRuleType;
+import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 
 import java.util.Locale;
 import java.util.Map;
@@ -28,35 +31,48 @@ public class RuleFactory {
 
 	public static Rule createDDMFormFieldRule(
 		String expression, DDMExpressionFactory ddmExpressionFactory,
+		DDMDataProviderInstanceService ddmDataProviderInstanceService,
+		DDMDataProviderTracker ddmDataProviderTracker,
 		Map<String, DDMFormFieldEvaluationResult>
 			ddmFormFieldEvaluationResults, String ddmFormFieldName,
-		DDMFormFieldRuleType ddmFormFieldRuleType, String instanceId,
-		Locale locale) {
+		DDMFormFieldRuleType ddmFormFieldRuleType,
+		DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
+		String instanceId, Locale locale) {
 
 		if (ddmFormFieldRuleType == DDMFormFieldRuleType.DATA_PROVIDER) {
 			return new DataProviderRule(
-				expression, ddmExpressionFactory, ddmFormFieldEvaluationResults,
-				ddmFormFieldName, instanceId);
+				expression, ddmExpressionFactory,
+				ddmDataProviderInstanceService, ddmDataProviderTracker,
+				ddmFormFieldEvaluationResults, ddmFormFieldName,
+				ddmFormValuesJSONDeserializer, instanceId);
 		}
 		else if(ddmFormFieldRuleType == DDMFormFieldRuleType.READ_ONLY) {
 			return new ReadOnlyRule(
-				expression, ddmExpressionFactory, ddmFormFieldEvaluationResults,
-				ddmFormFieldName, instanceId);
+				expression, ddmExpressionFactory,
+				ddmDataProviderInstanceService, ddmDataProviderTracker,
+				ddmFormFieldEvaluationResults, ddmFormFieldName,
+				ddmFormValuesJSONDeserializer, instanceId);
 		}
 		else if(ddmFormFieldRuleType == DDMFormFieldRuleType.VALIDATION) {
 			return new ValidationRule(
-				expression, ddmExpressionFactory, ddmFormFieldEvaluationResults,
-				ddmFormFieldName, instanceId);
+				expression, ddmExpressionFactory,
+				ddmDataProviderInstanceService, ddmDataProviderTracker,
+				ddmFormFieldEvaluationResults, ddmFormFieldName,
+				ddmFormValuesJSONDeserializer, instanceId);
 		}
 		else if(ddmFormFieldRuleType == DDMFormFieldRuleType.VALUE) {
 			return new ValueRule(
-				expression, ddmExpressionFactory, ddmFormFieldEvaluationResults,
-				ddmFormFieldName, instanceId, locale);
+				expression, ddmExpressionFactory,
+				ddmDataProviderInstanceService, ddmDataProviderTracker,
+				ddmFormFieldEvaluationResults, ddmFormFieldName,
+				ddmFormValuesJSONDeserializer, instanceId, locale);
 		}
 		else if(ddmFormFieldRuleType == DDMFormFieldRuleType.VISIBILITY) {
 			return new VisibilityRule(
-				expression, ddmExpressionFactory, ddmFormFieldEvaluationResults,
-				ddmFormFieldName, instanceId);
+				expression, ddmExpressionFactory,
+				ddmDataProviderInstanceService, ddmDataProviderTracker,
+				ddmFormFieldEvaluationResults, ddmFormFieldName,
+				ddmFormValuesJSONDeserializer, instanceId);
 		}
 
 		return null;
