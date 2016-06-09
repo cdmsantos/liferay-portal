@@ -22,38 +22,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author Marcellus Tavares
+ * @author Leonardo Barros
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface DDMFormField {
-
-	public String dataType() default StringPool.BLANK;
-
-	public String label() default StringPool.BLANK;
-
-	public String name() default StringPool.BLANK;
-
-	public String[] optionLabels() default {};
-
-	public String[] optionValues() default {};
-
-	public String predefinedValue() default StringPool.BLANK;
-
-	public String[] properties() default {};
-
-	public boolean required() default false;
-
-	public DDMFormFieldRule[] rules() default {};
-
-	public String tip() default StringPool.BLANK;
+public @interface DDMFormFieldRule {
+	public String expression() default StringPool.BLANK;
 
 	public String type() default StringPool.BLANK;
-
-	public String validationErrorMessage() default StringPool.BLANK;
-
-	public String validationExpression() default StringPool.BLANK;
-
-	public String visibilityExpression() default StringPool.BLANK;
 
 }
