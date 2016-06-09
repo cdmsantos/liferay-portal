@@ -44,7 +44,9 @@ import com.liferay.dynamic.data.mapping.annotations.DDMFormLayoutRow;
 )
 public interface DDMFormFieldTypeSettings {
 
-	@DDMFormField(required = true, visibilityExpression = "FALSE")
+	@DDMFormField(
+		required = true, visibilityExpression = "FALSE"
+	)
 	public String dataType();
 
 	@DDMFormField(
