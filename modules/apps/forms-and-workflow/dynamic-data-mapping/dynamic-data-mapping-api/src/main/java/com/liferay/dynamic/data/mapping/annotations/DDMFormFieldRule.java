@@ -14,6 +14,7 @@
 
 package com.liferay.dynamic.data.mapping.annotations;
 
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldRuleType;
 import com.liferay.portal.kernel.util.StringPool;
 
 import java.lang.annotation.ElementType;
@@ -27,8 +28,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface DDMFormFieldRule {
+	public String errorMessage() default StringPool.BLANK;
+
 	public String expression() default StringPool.BLANK;
 
-	public String type() default StringPool.BLANK;
+	public DDMFormFieldRuleType type() default DDMFormFieldRuleType.VALUE;
 
 }
