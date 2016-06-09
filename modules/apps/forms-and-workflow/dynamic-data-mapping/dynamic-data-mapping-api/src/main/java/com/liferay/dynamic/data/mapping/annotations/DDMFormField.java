@@ -50,8 +50,10 @@ public @interface DDMFormField {
 
 	public String type() default StringPool.BLANK;
 
+	@Deprecated
 	public String validationErrorMessage() default StringPool.BLANK;
 
+	@Deprecated
 	public String validationExpression() default StringPool.BLANK;
 
 	@Deprecated
