@@ -15,6 +15,7 @@
 package com.liferay.dynamic.data.mapping.form.evaluator;
 
 import com.liferay.portal.kernel.json.JSON;
+import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.ArrayList;
@@ -49,6 +50,18 @@ public class DDMFormFieldEvaluationResult {
 		return _nestedDDMFormFieldEvaluationResults;
 	}
 
+	public List<KeyValuePair> getOptions() {
+		return _options;
+	}
+
+	public Object getValue() {
+		return _value;
+	}
+
+	public boolean isReadOnly() {
+		return _readOnly;
+	}
+
 	public boolean isValid() {
 		return _valid;
 	}
@@ -69,8 +82,16 @@ public class DDMFormFieldEvaluationResult {
 			nestedDDMFormFieldEvaluationResults;
 	}
 
+	public void setReadOnly(boolean readOnly) {
+		_readOnly = readOnly;
+	}
+
 	public void setValid(boolean valid) {
 		_valid = valid;
+	}
+
+	public void setValue(Object value) {
+		_value = value;
 	}
 
 	public void setVisible(boolean visible) {
@@ -82,7 +103,10 @@ public class DDMFormFieldEvaluationResult {
 	private final String _name;
 	private List<DDMFormFieldEvaluationResult>
 		_nestedDDMFormFieldEvaluationResults = new ArrayList<>();
+	private final List<KeyValuePair> _options = new ArrayList<>();
+	private boolean _readOnly;
 	private boolean _valid = true;
+	private Object _value;
 	private boolean _visible = true;
 
 }
