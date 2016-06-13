@@ -91,8 +91,9 @@ public class VisibilityRuleTest extends DDMFormRuleEvaluatorBaseTest {
 			fieldDDMFormField2, ddmFormValues, ddmFormFieldEvaluationResults);
 
 		VisibilityRule visibilityRule = new VisibilityRule(
-			"field3 > (field1 + field2)", new DDMExpressionFactoryImpl(),
-			ddmFormFieldEvaluationResults, "field3", StringPool.BLANK);
+			"field3 > (field1 + field2)", new DDMExpressionFactoryImpl(), null,
+			null, ddmFormFieldEvaluationResults, "field3", null,
+			StringPool.BLANK);
 
 		visibilityRule.evaluate();
 
@@ -169,8 +170,8 @@ public class VisibilityRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		VisibilityRule visibilityRule = new VisibilityRule(
 			"field1 * field2 >= (field3 + field4)",
-			new DDMExpressionFactoryImpl(), ddmFormFieldEvaluationResults,
-			"field3", StringPool.BLANK);
+			new DDMExpressionFactoryImpl(), null, null,
+			ddmFormFieldEvaluationResults, "field3", null, StringPool.BLANK);
 
 		visibilityRule.evaluate();
 
@@ -220,8 +221,9 @@ public class VisibilityRuleTest extends DDMFormRuleEvaluatorBaseTest {
 			fieldDDMFormField1, ddmFormValues, ddmFormFieldEvaluationResults);
 
 		VisibilityRule visibilityRule = new VisibilityRule(
-			"equals(field1,\"value1\")", new DDMExpressionFactoryImpl(),
-			ddmFormFieldEvaluationResults, "field2", StringPool.BLANK);
+			"equals(field1,\"value1\")", new DDMExpressionFactoryImpl(), null,
+			null, ddmFormFieldEvaluationResults, "field2", null,
+			StringPool.BLANK);
 
 		visibilityRule.evaluate();
 
@@ -290,8 +292,8 @@ public class VisibilityRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		VisibilityRule visibilityRule = new VisibilityRule(
 			"equals(field1,\"value1\") && not(isReadOnly(field3))",
-			new DDMExpressionFactoryImpl(), ddmFormFieldEvaluationResults,
-			"field2", StringPool.BLANK);
+			new DDMExpressionFactoryImpl(), null, null,
+			ddmFormFieldEvaluationResults, "field2", null, StringPool.BLANK);
 
 		visibilityRule.evaluate();
 

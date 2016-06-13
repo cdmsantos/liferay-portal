@@ -94,8 +94,8 @@ public class ReadOnlyRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ReadOnlyRule readOnlyRule = new ReadOnlyRule(
 			"between(field1, 5, 10) && equals(field2, field3)",
-			new DDMExpressionFactoryImpl(), ddmFormFieldEvaluationResults,
-			"field1", StringPool.BLANK);
+			new DDMExpressionFactoryImpl(), null, null,
+			ddmFormFieldEvaluationResults, "field1", null, StringPool.BLANK);
 
 		readOnlyRule.evaluate();
 
@@ -145,8 +145,9 @@ public class ReadOnlyRuleTest extends DDMFormRuleEvaluatorBaseTest {
 			fieldDDMFormField1, ddmFormValues, ddmFormFieldEvaluationResults);
 
 		ReadOnlyRule readOnlyRule = new ReadOnlyRule(
-			"10 >= (field1 + field2)", new DDMExpressionFactoryImpl(),
-			ddmFormFieldEvaluationResults, "field1", StringPool.BLANK);
+			"10 >= (field1 + field2)", new DDMExpressionFactoryImpl(), null,
+			null, ddmFormFieldEvaluationResults, "field1", null,
+			StringPool.BLANK);
 
 		readOnlyRule.evaluate();
 
