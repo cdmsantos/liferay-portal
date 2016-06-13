@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.form.evaluator.rules;
+package com.liferay.dynamic.data.mapping.form.evaluator.internal.rules;
 
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationException;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldRuleType;

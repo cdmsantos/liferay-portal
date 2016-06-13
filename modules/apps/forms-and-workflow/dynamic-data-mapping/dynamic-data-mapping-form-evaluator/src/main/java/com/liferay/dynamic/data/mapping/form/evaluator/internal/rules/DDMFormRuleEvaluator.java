@@ -12,13 +12,13 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.form.evaluator.rules;
+package com.liferay.dynamic.data.mapping.form.evaluator.internal.rules;
 
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderTracker;
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationException;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
-import com.liferay.dynamic.data.mapping.form.evaluator.rules.type.Rule;
+import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.type.Rule;
 import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.type.RuleFactory;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.model.DDMForm;

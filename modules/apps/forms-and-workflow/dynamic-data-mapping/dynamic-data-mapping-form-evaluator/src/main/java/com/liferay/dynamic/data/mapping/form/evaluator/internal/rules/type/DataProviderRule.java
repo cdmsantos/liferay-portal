@@ -12,25 +12,23 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.form.evaluator.rules.type;
+package com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.type;
 
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderTracker;
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
-import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationException;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldRuleType;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Map;
 
 /**
  * @author Leonardo Barros
  */
-public class VisibilityRule extends BaseRule {
+public class DataProviderRule extends BaseRule {
 
-	public VisibilityRule(
+	public DataProviderRule(
 		String expression, DDMExpressionFactory ddmExpressionFactory,
 		DDMDataProviderInstanceService ddmDataProviderInstanceService,
 		DDMDataProviderTracker ddmDataProviderTracker,
@@ -42,22 +40,8 @@ public class VisibilityRule extends BaseRule {
 		super(
 			expression, ddmExpressionFactory, ddmDataProviderInstanceService,
 			ddmDataProviderTracker, ddmFormFieldEvaluationResults,
-			ddmFormFieldName, DDMFormFieldRuleType.VISIBILITY,
+			ddmFormFieldName, DDMFormFieldRuleType.DATA_PROVIDER,
 			ddmFormValuesJSONDeserializer, instanceId);
-	}
-
-	@Override
-	public void evaluate() throws DDMFormEvaluationException {
-		if (Validator.isNull(expression)) {
-			return;
-		}
-
-		boolean expressionResult = executeExpression(Boolean.class);
-
-		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get(getDDMFormFieldName());
-
-		ddmFormFieldEvaluationResult.setVisible(expressionResult);
 	}
 
 }

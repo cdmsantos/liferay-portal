@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.form.evaluator.rules.type;
+package com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.type;
 
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderTracker;
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
@@ -28,9 +28,9 @@ import java.util.Map;
 /**
  * @author Leonardo Barros
  */
-public class ValidationRule extends BaseRule {
+public class VisibilityRule extends BaseRule {
 
-	public ValidationRule(
+	public VisibilityRule(
 		String expression, DDMExpressionFactory ddmExpressionFactory,
 		DDMDataProviderInstanceService ddmDataProviderInstanceService,
 		DDMDataProviderTracker ddmDataProviderTracker,
@@ -42,7 +42,7 @@ public class ValidationRule extends BaseRule {
 		super(
 			expression, ddmExpressionFactory, ddmDataProviderInstanceService,
 			ddmDataProviderTracker, ddmFormFieldEvaluationResults,
-			ddmFormFieldName, DDMFormFieldRuleType.VALIDATION,
+			ddmFormFieldName, DDMFormFieldRuleType.VISIBILITY,
 			ddmFormValuesJSONDeserializer, instanceId);
 	}
 
@@ -57,7 +57,7 @@ public class ValidationRule extends BaseRule {
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
 			ddmFormFieldEvaluationResults.get(getDDMFormFieldName());
 
-		ddmFormFieldEvaluationResult.setValid(expressionResult);
+		ddmFormFieldEvaluationResult.setVisible(expressionResult);
 	}
 
 }
