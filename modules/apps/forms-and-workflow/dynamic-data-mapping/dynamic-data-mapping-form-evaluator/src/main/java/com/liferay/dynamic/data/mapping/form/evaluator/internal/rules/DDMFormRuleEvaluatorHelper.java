@@ -57,28 +57,6 @@ public class DDMFormRuleEvaluatorHelper {
 		return ddmFormRuleEvaluatorGraph;
 	}
 
-	public boolean hasDependencies(String expression) throws Exception {
-		if (Validator.isNull(expression)) {
-			return false;
-		}
-
-		DDMExpression<Boolean> ddmExpression =
-			_ddmExpressionFactory.createBooleanDDMExpression(expression);
-
-		Map<String, VariableDependencies> dependenciesMap =
-			ddmExpression.getVariableDependenciesMap();
-
-		Map<String, DDMFormField> ddmFormFieldsMap = getDDMFormFieldsMap();
-
-		for (String ddmFormFieldName : ddmFormFieldsMap.keySet()) {
-			if (dependenciesMap.containsKey(ddmFormFieldName)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	protected Set<DDMFormRuleEvaluatorNode> createDataProviderEdges(
 		String expression) {
 
@@ -180,7 +158,7 @@ public class DDMFormRuleEvaluatorHelper {
 		Set<DDMFormRuleEvaluatorNode> groupedNodes = new HashSet<>(nodes);
 		List<DDMFormRuleEvaluatorNode> flatNodes = new ArrayList<>(nodes);
 
-		for (DDMFormRuleEvaluatorNode node : groupedNodes) {
+		for (DDMFormRuleEvaluatorNode node : nodes) {
 			createEdges(flatNodes, groupedNodes, node);
 		}
 	}
@@ -195,7 +173,7 @@ public class DDMFormRuleEvaluatorHelper {
 
 		Matcher matcher = pattern.matcher(expression);
 
-		if (matcher.find()) {
+		while (matcher.find()) {
 			Set<String> ddmFormFieldNames = extractDDMFormFieldName(
 				matcher.group(1));
 
@@ -280,6 +258,28 @@ public class DDMFormRuleEvaluatorHelper {
 
 	protected Map<String, DDMFormField> getDDMFormFieldsMap() {
 		return _ddmForm.getDDMFormFieldsMap(true);
+	}
+
+	protected boolean hasDependencies(String expression) throws Exception {
+		if (Validator.isNull(expression)) {
+			return false;
+		}
+
+		DDMExpression<Boolean> ddmExpression =
+			_ddmExpressionFactory.createBooleanDDMExpression(expression);
+
+		Map<String, VariableDependencies> dependenciesMap =
+			ddmExpression.getVariableDependenciesMap();
+
+		Map<String, DDMFormField> ddmFormFieldsMap = getDDMFormFieldsMap();
+
+		for (String ddmFormFieldName : ddmFormFieldsMap.keySet()) {
+			if (dependenciesMap.containsKey(ddmFormFieldName)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private static final String _BETWEEN_PATTERN =

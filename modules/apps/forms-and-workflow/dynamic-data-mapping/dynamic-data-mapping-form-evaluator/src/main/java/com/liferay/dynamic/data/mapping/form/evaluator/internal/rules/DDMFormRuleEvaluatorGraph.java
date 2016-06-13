@@ -29,6 +29,10 @@ public class DDMFormRuleEvaluatorGraph {
 		_nodes = nodes;
 	}
 
+	public Set<DDMFormRuleEvaluatorNode> getNodes() {
+		return _nodes;
+	}
+
 	public List<DDMFormRuleEvaluatorNode> sort()
 		throws DDMFormEvaluationException {
 
