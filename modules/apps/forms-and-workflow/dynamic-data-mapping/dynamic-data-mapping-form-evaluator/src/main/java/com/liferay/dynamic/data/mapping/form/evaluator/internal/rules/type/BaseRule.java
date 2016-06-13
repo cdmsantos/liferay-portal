@@ -65,8 +65,6 @@ public abstract class BaseRule implements Rule {
 			return;
 		}
 
-		executeFunctions();
-
 		executeExpression(Boolean.class);
 	}
 
@@ -105,6 +103,8 @@ public abstract class BaseRule implements Rule {
 		throws DDMFormEvaluationException {
 
 		try {
+			executeFunctions();
+
 			DDMExpression<T> ddmExpression = createDDMExpression(clazz);
 
 			Map<String, VariableDependencies> dependenciesMap =
