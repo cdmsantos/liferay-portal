@@ -99,11 +99,26 @@ public abstract class BaseRule implements Rule {
 			createBooleanDDMExpression(expression);
 	}
 
+
+	protected <T> T createDefaultResult(Class<T> clazz)
+		throws Exception {
+
+		if (clazz.equals(Boolean.class)) {
+			return (T)Boolean.TRUE;
+		}
+
+		return (T)"";
+	}
+
 	protected <T> T executeExpression(Class<T> clazz)
 		throws DDMFormEvaluationException {
 
 		try {
 			executeFunctions();
+
+			if (Validator.isNull(expression)) {
+				return createDefaultResult(clazz);
+			}
 
 			DDMExpression<T> ddmExpression = createDDMExpression(clazz);
 
