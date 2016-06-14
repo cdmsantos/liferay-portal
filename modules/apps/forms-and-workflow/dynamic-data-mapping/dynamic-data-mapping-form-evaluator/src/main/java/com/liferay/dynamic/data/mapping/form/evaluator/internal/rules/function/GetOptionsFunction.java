@@ -120,6 +120,6 @@ public class GetOptionsFunction extends CallFunction {
 	}
 
 	private static final String _PATTERN =
-		"((getOptions)\\((\\d+),\"(.+)\",\"(.+)\"\\))";
+		"((getOptions)\\((\\d+),\"(.*)\",\"(.*)\"\\))";
 
 }
