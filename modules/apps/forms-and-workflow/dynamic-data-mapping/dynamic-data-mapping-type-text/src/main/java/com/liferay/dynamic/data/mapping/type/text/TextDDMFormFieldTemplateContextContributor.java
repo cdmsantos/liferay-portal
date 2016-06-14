@@ -16,6 +16,8 @@ package com.liferay.dynamic.data.mapping.type.text;
 
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTemplateContextContributor;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldRule;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldRuleType;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
@@ -23,6 +25,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -47,6 +50,10 @@ public class TextDDMFormFieldTemplateContextContributor
 
 		Map<String, Object> parameters = new HashMap<>();
 
+		boolean autocomplete = isAutoComplete(
+			ddmFormField.getDDMFormFieldRules());
+
+		parameters.put("autocomplete", autocomplete);
 		parameters.put(
 			"displayStyle",
 			GetterUtil.getString(
@@ -73,6 +80,23 @@ public class TextDDMFormFieldTemplateContextContributor
 		}
 
 		return StringPool.BLANK;
+	}
+
+	protected boolean isAutoComplete(List<DDMFormFieldRule> ddmFormFieldRules) {
+		for (DDMFormFieldRule ddmFormFieldRule : ddmFormFieldRules) {
+			DDMFormFieldRuleType ddmFormFieldRuleType =
+				ddmFormFieldRule.getDDMFormFieldRuleType();
+
+			String expression = ddmFormFieldRule.getExpression();
+
+			if ((ddmFormFieldRuleType == DDMFormFieldRuleType.DATA_PROVIDER) &&
+				expression.contains("getOptions")) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }
