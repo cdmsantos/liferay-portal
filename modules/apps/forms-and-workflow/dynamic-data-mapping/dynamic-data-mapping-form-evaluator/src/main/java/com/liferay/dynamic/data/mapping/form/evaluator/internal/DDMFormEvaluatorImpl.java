@@ -14,16 +14,25 @@
 
 package com.liferay.dynamic.data.mapping.form.evaluator.internal;
 
+import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderTracker;
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationException;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationResult;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluator;
+import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
+import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.DDMFormRuleEvaluator;
+import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.DDMFormRuleEvaluatorHelper;
+import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
+import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -47,15 +56,88 @@ public class DDMFormEvaluatorImpl implements DDMFormEvaluator {
 				_ddmExpressionFactory);
 			ddmFormEvaluatorHelper.setJSONFactory(_jsonFactory);
 
-			return ddmFormEvaluatorHelper.evaluate();
+			DDMFormEvaluationResult ddmFormEvaluationResult =
+				ddmFormEvaluatorHelper.evaluate();
+
+			Map<String, DDMFormFieldEvaluationResult>
+				expressionDDMFormFieldEvaluationResults =
+					ddmFormEvaluationResult.getDDMFormFieldEvaluationResultsMap();
+
+			DDMFormRuleEvaluatorHelper ddmFormRuleEvaluatorHelper =
+				new DDMFormRuleEvaluatorHelper(_ddmExpressionFactory, ddmForm);
+
+			DDMFormRuleEvaluator ddmFormRuleEvaluator =
+				new DDMFormRuleEvaluator(
+					_ddmDataProviderInstanceService, _ddmDataProviderTracker,
+					_ddmExpressionFactory, ddmForm,
+					ddmFormRuleEvaluatorHelper.
+						createDDMFormRuleEvaluatorGraph(),
+					ddmFormValues, _ddFormValuesJSONDeserializer, locale);
+
+			List<DDMFormFieldEvaluationResult>
+				ruleDDMFormFieldEvaluationResults =
+					ddmFormRuleEvaluator.evaluate();
+
+			return merge(
+				expressionDDMFormFieldEvaluationResults.values(),
+				ruleDDMFormFieldEvaluationResults);
 		}
-		catch (PortalException pe) {
-			throw new DDMFormEvaluationException(pe);
+		catch (Exception e) {
+			throw new DDMFormEvaluationException(e);
 		}
 	}
 
+	protected DDMFormEvaluationResult merge(
+		Collection<DDMFormFieldEvaluationResult> expressionDDMFormFieldEvaluationResults,
+		List<DDMFormFieldEvaluationResult> ruleDDMFormFieldEvaluationResults ) {
+
+
+		for (DDMFormFieldEvaluationResult expressionDDMFormFieldEvaluationResult :
+				expressionDDMFormFieldEvaluationResults) {
+
+			if (expressionDDMFormFieldEvaluationResult.isValid()) {
+				continue;
+			}
+
+
+			int indexOf = ruleDDMFormFieldEvaluationResults.indexOf(
+				expressionDDMFormFieldEvaluationResult);
+
+			if (indexOf < 0) {
+				continue;
+			}
+
+			DDMFormFieldEvaluationResult ruleDdmFormFieldEvaluationResult =
+				ruleDDMFormFieldEvaluationResults.get(indexOf);
+
+			if (ruleDdmFormFieldEvaluationResult.isValid()) {
+				ruleDdmFormFieldEvaluationResult.setValid(false);
+				ruleDdmFormFieldEvaluationResult.setErrorMessage(
+					expressionDDMFormFieldEvaluationResult.getErrorMessage());
+			}
+		}
+
+		DDMFormEvaluationResult ddmFormEvaluationResult =
+			new DDMFormEvaluationResult();
+
+		ddmFormEvaluationResult.setDDMFormFieldEvaluationResults(
+			ruleDDMFormFieldEvaluationResults);
+
+		return ddmFormEvaluationResult;
+	}
+
+
+	@Reference
+	private DDMDataProviderInstanceService _ddmDataProviderInstanceService;
+
+	@Reference
+	private DDMDataProviderTracker _ddmDataProviderTracker;
+
 	@Reference
 	private DDMExpressionFactory _ddmExpressionFactory;
+
+	@Reference
+	private DDMFormValuesJSONDeserializer _ddFormValuesJSONDeserializer;
 
 	@Reference
 	private JSONFactory _jsonFactory;
