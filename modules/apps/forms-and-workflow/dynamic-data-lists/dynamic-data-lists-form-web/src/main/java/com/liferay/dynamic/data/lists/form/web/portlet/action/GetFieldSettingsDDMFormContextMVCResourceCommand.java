@@ -111,18 +111,9 @@ public class GetFieldSettingsDDMFormContextMVCResourceCommand
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
-		String definition = ParamUtil.getString(resourceRequest, "definition");
-		String fieldName = ParamUtil.getString(resourceRequest, "name");
+		String type = ParamUtil.getString(resourceRequest, "type");
 
-		DDMForm ddmForm = _ddmFormJSONDeserializer.deserialize(definition);
-
-		Map<String, DDMFormField> ddmFormFieldMap = ddmForm.getDDMFormFieldsMap(
-			true);
-
-		DDMFormField ddmFormField = ddmFormFieldMap.get(fieldName);
-
-		Class<?> ddmFormFieldTypeSettings = getDDMFormFieldTypeSettings(
-			ddmFormField.getName());
+		Class<?> ddmFormFieldTypeSettings = getDDMFormFieldTypeSettings(type);
 
 		DDMForm ddmFormFieldTypeSettingsDDMForm = DDMFormFactory.create(
 			ddmFormFieldTypeSettings);
@@ -141,14 +132,10 @@ public class GetFieldSettingsDDMFormContextMVCResourceCommand
 		ddmFormRenderingContext.setLocale(resourceRequest.getLocale());
 		ddmFormRenderingContext.setPortletNamespace(
 			resourceResponse.getNamespace());
-		ddmFormRenderingContext.setDDMFormValues(
-			createDDMFormFieldTypeSettingsDDMFormValues(
-				resourceRequest, ddmFormField, ddmFormFieldTypeSettingsDDMForm,
-				resourceRequest.getLocale()));
 
 		ResourceURL resourceURL = resourceResponse.createResourceURL();
 
-		resourceURL.setParameter("type", ddmFormField.getType());
+		resourceURL.setParameter("type", type);
 		resourceURL.setResourceID("evaluateDDMFormFieldTypeSettings");
 
 		ddmFormRenderingContext.setEvaluatorURL(resourceURL.toString());
@@ -163,7 +150,7 @@ public class GetFieldSettingsDDMFormContextMVCResourceCommand
 		JSONSerializer jsonSerializer = _jsonFactory.createJSONSerializer();
 
 		PortletResponseUtil.write(
-			resourceResponse, jsonSerializer.serialize(templateContext));
+			resourceResponse, jsonSerializer.serializeDeep(templateContext));
 
 		resourceResponse.flushBuffer();
 	}
