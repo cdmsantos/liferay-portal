@@ -76,14 +76,12 @@ public class DDMFormFieldFactoryHelper {
 		ddmFormField.setDataType(getDDMFormFieldDataType());
 		ddmFormField.setDDMFormFieldOptions(getDDMFormFieldOptions());
 		ddmFormField.setDDMFormFieldRules(getDDMFormFieldRules());
-		ddmFormField.setDDMFormFieldValidation(getDDMFormFieldValidation());
 		ddmFormField.setLabel(getDDMFormFieldLabel());
 		ddmFormField.setLocalizable(isDDMFormFieldLocalizable());
 		ddmFormField.setPredefinedValue(getDDMFormFieldPredefinedValue());
 		ddmFormField.setRepeatable(isDDMFormFieldRepeatable());
 		ddmFormField.setRequired(isDDMFormFieldRequired());
 		ddmFormField.setTip(getDDMFormFieldTip());
-		ddmFormField.setVisible(isDDMFormFieldVisible());
 
 		return ddmFormField;
 	}
@@ -260,7 +258,23 @@ public class DDMFormFieldFactoryHelper {
 					ruleAnnotation.type()));
 		}
 
-		if (Validator.isNotNull(getDDMFormFieldVisibilityExpression())) {
+		// Validation expression
+
+		if (Validator.isNotNull(_ddmFormField.validationExpression())) {
+			ddmFormFieldRules.add(
+				new DDMFormFieldRule(
+					getValidationErrorMessage(),
+					_ddmFormField.validationExpression(),
+					DDMFormFieldRuleType.VALIDATION));
+		}
+
+		// Visibility expression
+
+		if (!isDDMFormFieldVisible()) {
+			ddmFormFieldRules.add(
+				new DDMFormFieldRule("FALSE", DDMFormFieldRuleType.VISIBILITY));
+		}
+		else if (Validator.isNotNull(getDDMFormFieldVisibilityExpression())) {
 			ddmFormFieldRules.add(
 				new DDMFormFieldRule(
 					getDDMFormFieldVisibilityExpression(),
@@ -268,6 +282,25 @@ public class DDMFormFieldFactoryHelper {
 		}
 
 		return ddmFormFieldRules;
+	}
+
+	protected  String getValidationErrorMessage() {
+		if (Validator.isNull(_ddmFormField.validationErrorMessage())) {
+			return StringPool.BLANK;
+		}
+
+		String validationErrorMessage =
+			_ddmFormField.validationErrorMessage();
+
+		if (isLocalizableValue(validationErrorMessage)) {
+			String languageKey = extractLanguageKey(
+				validationErrorMessage);
+
+			validationErrorMessage = getLocalizedValue(
+				_defaultLocale, languageKey);
+		}
+
+		return validationErrorMessage;
 	}
 
 	protected LocalizedValue getDDMFormFieldTip() {
@@ -288,32 +321,6 @@ public class DDMFormFieldFactoryHelper {
 		}
 
 		return "text";
-	}
-
-	protected DDMFormFieldValidation getDDMFormFieldValidation() {
-		DDMFormFieldValidation ddmFormFieldValidation =
-			new DDMFormFieldValidation();
-
-		if (Validator.isNotNull(_ddmFormField.validationExpression())) {
-			ddmFormFieldValidation.setExpression(
-				_ddmFormField.validationExpression());
-		}
-
-		if (Validator.isNotNull(_ddmFormField.validationErrorMessage())) {
-			String validationErrorMessage =
-				_ddmFormField.validationErrorMessage();
-
-			if (isLocalizableValue(validationErrorMessage)) {
-				String languageKey = extractLanguageKey(validationErrorMessage);
-
-				validationErrorMessage = getLocalizedValue(
-					_defaultLocale, languageKey);
-			}
-
-			ddmFormFieldValidation.setErrorMessage(validationErrorMessage);
-		}
-
-		return ddmFormFieldValidation;
 	}
 
 	protected String getDDMFormFieldVisibilityExpression() {
