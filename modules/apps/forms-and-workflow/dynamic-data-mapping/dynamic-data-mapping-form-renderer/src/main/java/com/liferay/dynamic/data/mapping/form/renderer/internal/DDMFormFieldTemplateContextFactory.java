@@ -119,8 +119,6 @@ public class DDMFormFieldTemplateContextFactory {
 
 		setDDMFormFieldTemplateContextName(
 			ddmFormFieldTemplateContext, ddmFormFieldParameterName);
-		setDDMFormFieldTemplateContextTemplateNamespace(
-			ddmFormFieldTemplateContext, ddmFormField.getType());
 
 		List<Object> nestedDDMFormFieldTemplateContext =
 			createNestedDDMFormFieldTemplateContext(
@@ -130,6 +128,8 @@ public class DDMFormFieldTemplateContextFactory {
 			ddmFormFieldTemplateContext, nestedDDMFormFieldTemplateContext);
 		setDDMFormFieldTemplateContextReadOnly(
 			ddmFormFieldTemplateContext, ddmFormField.isReadOnly());
+		setDDMFormFieldTemplateContextRepeatable(
+			ddmFormFieldTemplateContext, ddmFormField.isRepeatable());
 		setDDMFormFieldTemplateContextRequired(
 			ddmFormFieldTemplateContext, ddmFormField.isRequired());
 		setDDMFormFieldTemplateContextShowLabel(
@@ -207,23 +207,6 @@ public class DDMFormFieldTemplateContextFactory {
 		sb.append(LocaleUtil.toLanguageId(_locale));
 
 		return sb.toString();
-	}
-
-	protected BaseDDMFormFieldRenderer getBaseDDMFormFieldRenderer(
-		String fieldType) {
-
-		DDMFormFieldRenderer ddmFormFieldRenderer =
-			_ddmFormFieldTypeServicesTracker.getDDMFormFieldRenderer(fieldType);
-
-		if (ddmFormFieldRenderer == null) {
-			return null;
-		}
-
-		if (ddmFormFieldRenderer instanceof BaseDDMFormFieldRenderer) {
-			return (BaseDDMFormFieldRenderer)ddmFormFieldRenderer;
-		}
-
-		return null;
 	}
 
 	protected String getDDMFormFieldParameterName(
@@ -329,6 +312,12 @@ public class DDMFormFieldTemplateContextFactory {
 		ddmFormFieldTemplateContext.put("readOnly", readOnly);
 	}
 
+	protected void setDDMFormFieldTemplateContextRepeatable(
+		Map<String, Object> ddmFormFieldTemplateContext, boolean repeatable) {
+
+		ddmFormFieldTemplateContext.put("repeatable", repeatable);
+	}
+
 	protected void setDDMFormFieldTemplateContextRequired(
 		Map<String, Object> ddmFormFieldTemplateContext, boolean required) {
 
@@ -339,21 +328,6 @@ public class DDMFormFieldTemplateContextFactory {
 		Map<String, Object> ddmFormFieldTemplateContext, boolean showLabel) {
 
 		ddmFormFieldTemplateContext.put("showLabel", showLabel);
-	}
-
-	protected void setDDMFormFieldTemplateContextTemplateNamespace(
-		Map<String, Object> ddmFormFieldTemplateContext, String fieldType) {
-
-		BaseDDMFormFieldRenderer baseDDMFormFieldRenderer =
-			getBaseDDMFormFieldRenderer(fieldType);
-
-		if (baseDDMFormFieldRenderer == null) {
-			return;
-		}
-
-		ddmFormFieldTemplateContext.put(
-			"templateNamespace",
-			baseDDMFormFieldRenderer.getTemplateNamespace());
 	}
 
 	protected void setDDMFormFieldTemplateContextType(
