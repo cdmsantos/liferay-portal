@@ -14,13 +14,27 @@
 
 package com.liferay.dynamic.data.mapping.type.select;
 
+import com.liferay.dynamic.data.mapping.data.provider.DDMDataProvider;
+import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderContext;
+import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderContextContributor;
+import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderTracker;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTemplateContextContributor;
+import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
+import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
+import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
+import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
+import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
+import com.liferay.dynamic.data.mapping.util.DDMFormFactory;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
@@ -30,6 +44,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -73,14 +89,89 @@ public class SelectDDMFormFieldTemplateContextContributor
 		return parameters;
 	}
 
+	protected void addDDMDataProviderContextParameters(
+		HttpServletRequest request,
+		DDMDataProviderContext ddmDataProviderContext,
+		List<DDMDataProviderContextContributor>
+			ddmDataProviderContextContributors) {
+
+		for (DDMDataProviderContextContributor
+				ddmDataProviderContextContributor :
+					ddmDataProviderContextContributors) {
+
+			Map<String, String> parameters =
+				ddmDataProviderContextContributor.getParameters(request);
+
+			if (parameters == null) {
+				continue;
+			}
+
+			ddmDataProviderContext.addParameters(parameters);
+		}
+	}
+
 	protected DDMFormFieldOptions getDDMFormFieldOptions(
-		DDMFormField ddmFormField) {
+		DDMFormField ddmFormField,
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
 
 		String dataSourceType = GetterUtil.getString(
 			ddmFormField.getProperty("dataSourceType"), "manual");
 
 		if (Objects.equals(dataSourceType, "manual")) {
 			return ddmFormField.getDDMFormFieldOptions();
+		}
+
+		DDMFormFieldOptions ddmFormFieldOptions = new DDMFormFieldOptions();
+
+		ddmFormFieldOptions.setDefaultLocale(
+			ddmFormFieldRenderingContext.getLocale());
+
+		long ddmDataProviderInstanceId = GetterUtil.getLong(
+			ddmFormField.getProperty("ddmDataProviderInstanceId"));
+
+		try {
+			DDMDataProviderInstance ddmDataProviderInstance =
+				ddmDataProviderInstanceService.getDataProviderInstance(
+					ddmDataProviderInstanceId);
+
+			DDMDataProvider ddmDataProvider =
+				ddmDataProviderTracker.getDDMDataProvider(
+					ddmDataProviderInstance.getType());
+
+			DDMForm ddmForm = DDMFormFactory.create(
+				ddmDataProvider.getSettings());
+
+			DDMFormValues ddmFormValues =
+				ddmFormValuesJSONDeserializer.deserialize(
+					ddmForm, ddmDataProviderInstance.getDefinition());
+
+			DDMDataProviderContext ddmDataProviderContext =
+				new DDMDataProviderContext(ddmFormValues);
+
+			List<DDMDataProviderContextContributor>
+				ddmDataProviderContextContributors =
+					ddmDataProviderTracker.
+						getDDMDataProviderContextContributors(
+							ddmDataProviderInstance.getType());
+
+			addDDMDataProviderContextParameters(
+				ddmFormFieldRenderingContext.getHttpServletRequest(),
+				ddmDataProviderContext, ddmDataProviderContextContributors);
+
+			List<KeyValuePair> keyValuePairs = ddmDataProvider.getData(
+				ddmDataProviderContext);
+
+			for (KeyValuePair keyValuePair : keyValuePairs) {
+				ddmFormFieldOptions.addOptionLabel(
+					keyValuePair.getValue(),
+					ddmFormFieldRenderingContext.getLocale(),
+					keyValuePair.getKey());
+			}
+
+			return ddmFormFieldOptions;
+		}
+		catch (PortalException pe) {
+			_log.error("Unable to fetch data provider data", pe);
 		}
 
 		return new DDMFormFieldOptions();
@@ -92,7 +183,9 @@ public class SelectDDMFormFieldTemplateContextContributor
 
 		SelectDDMFormFieldContextHelper selectDDMFormFieldContextHelper =
 			new SelectDDMFormFieldContextHelper(
-				jsonFactory, getDDMFormFieldOptions(ddmFormField),
+				jsonFactory,
+				getDDMFormFieldOptions(
+					ddmFormField, ddmFormFieldRenderingContext),
 				ddmFormFieldRenderingContext.getValue(),
 				ddmFormField.getPredefinedValue(),
 				ddmFormFieldRenderingContext.getLocale());
@@ -108,6 +201,18 @@ public class SelectDDMFormFieldTemplateContextContributor
 	}
 
 	@Reference
+	protected DDMDataProviderInstanceService ddmDataProviderInstanceService;
+
+	@Reference
 	protected JSONFactory jsonFactory;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		SelectDDMFormFieldTemplateContextContributor.class);
+
+	@Reference
+	private DDMDataProviderTracker ddmDataProviderTracker;
+
+	@Reference
+	private DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer;
 
 }
