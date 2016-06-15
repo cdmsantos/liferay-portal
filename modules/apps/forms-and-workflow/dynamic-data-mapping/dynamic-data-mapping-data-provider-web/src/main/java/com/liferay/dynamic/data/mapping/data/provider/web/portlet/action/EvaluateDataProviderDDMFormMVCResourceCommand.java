@@ -48,7 +48,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = MVCResourceCommand.class
 )
-public class EvaluateRecordSetSettingsMVCResourceCommand
+public class EvaluateDataProviderDDMFormMVCResourceCommand
 	extends BaseMVCResourceCommand {
 
 	protected void doServeResource(
