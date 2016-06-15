@@ -77,6 +77,15 @@ AUI.add(
 						(new A.EventHandle(instance._eventHandlers)).detach();
 					},
 
+					getEvaluationPayload: function() {
+						var instance = this;
+
+						return {
+							recordSetId: instance.get('recordSetId'),
+							serializedDDMFormValues: JSON.stringify(instance.toJSON())
+						};
+					},
+
 					getFormNode: function() {
 						var instance = this;
 
