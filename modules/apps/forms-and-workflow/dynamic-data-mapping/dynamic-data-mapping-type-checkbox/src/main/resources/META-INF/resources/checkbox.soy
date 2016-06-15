@@ -19,9 +19,10 @@
  * @param showLabel
  * @param status
  * @param tip
+ * @param visible
  */
 {template .checkbox autoescape="deprecated-contextual"}
-	<div class="form-group liferay-ddm-form-field-checkbox" data-fieldname="{$name}">
+	<div class="form-group{$visible ? '' : ' hide'} liferay-ddm-form-field-checkbox" data-fieldname="{$name}">
 		{if $showAsSwitcher}
 			<label aria-checked="{($status) ? true : false}" for="{$name}" role="checkbox">
 				<input class="toggle-switch" {if $readOnly}disabled{/if} id="{$name}" name="{$name}" type="checkbox" {$status} value="true" />
