@@ -17,6 +17,7 @@ package com.liferay.dynamic.data.mapping.util;
 import com.liferay.dynamic.data.mapping.annotations.DDMForm;
 import com.liferay.dynamic.data.mapping.annotations.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldRule;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -73,6 +74,7 @@ public class DDMFormFieldFactoryHelper {
 
 		ddmFormField.setDataType(getDDMFormFieldDataType());
 		ddmFormField.setDDMFormFieldOptions(getDDMFormFieldOptions());
+		ddmFormField.setDDMFormFieldRules(getDDMFormFieldRules());
 		ddmFormField.setDDMFormFieldValidation(getDDMFormFieldValidation());
 		ddmFormField.setLabel(getDDMFormFieldLabel());
 		ddmFormField.setLocalizable(isDDMFormFieldLocalizable());
@@ -244,6 +246,21 @@ public class DDMFormFieldFactoryHelper {
 		}
 
 		return localizedValue;
+	}
+
+	protected List<DDMFormFieldRule> getDDMFormFieldRules() {
+		List<DDMFormFieldRule> ddmFormFieldRules = new ArrayList<>();
+
+		for (com.liferay.dynamic.data.mapping.annotations.DDMFormFieldRule
+				ruleAnnotation : _ddmFormField.rules()) {
+
+			ddmFormFieldRules.add(
+				new DDMFormFieldRule(
+					ruleAnnotation.errorMessage(), ruleAnnotation.expression(),
+					ruleAnnotation.type()));
+		}
+
+		return ddmFormFieldRules;
 	}
 
 	protected LocalizedValue getDDMFormFieldTip() {
