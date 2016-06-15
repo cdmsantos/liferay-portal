@@ -91,29 +91,31 @@ public class DDMFormEvaluatorImpl implements DDMFormEvaluator {
 		Collection<DDMFormFieldEvaluationResult> expressionDDMFormFieldEvaluationResults,
 		List<DDMFormFieldEvaluationResult> ruleDDMFormFieldEvaluationResults ) {
 
-
 		for (DDMFormFieldEvaluationResult expressionDDMFormFieldEvaluationResult :
 				expressionDDMFormFieldEvaluationResults) {
 
-			if (expressionDDMFormFieldEvaluationResult.isValid()) {
-				continue;
-			}
-
-
 			int indexOf = ruleDDMFormFieldEvaluationResults.indexOf(
-				expressionDDMFormFieldEvaluationResult);
-
+					expressionDDMFormFieldEvaluationResult);
+			
 			if (indexOf < 0) {
 				continue;
 			}
 
-			DDMFormFieldEvaluationResult ruleDdmFormFieldEvaluationResult =
+			DDMFormFieldEvaluationResult ruleDDMFormFieldEvaluationResult =
 				ruleDDMFormFieldEvaluationResults.get(indexOf);
 
-			if (ruleDdmFormFieldEvaluationResult.isValid()) {
-				ruleDdmFormFieldEvaluationResult.setValid(false);
-				ruleDdmFormFieldEvaluationResult.setErrorMessage(
-					expressionDDMFormFieldEvaluationResult.getErrorMessage());
+			if (!expressionDDMFormFieldEvaluationResult.isValid()) {
+				if (ruleDDMFormFieldEvaluationResult.isValid()) {
+					ruleDDMFormFieldEvaluationResult.setValid(false);
+					ruleDDMFormFieldEvaluationResult.setErrorMessage(
+						expressionDDMFormFieldEvaluationResult.getErrorMessage());
+				}
+			}
+
+			if (!expressionDDMFormFieldEvaluationResult.isVisible()) {
+				if (ruleDDMFormFieldEvaluationResult.isVisible()) {
+					ruleDDMFormFieldEvaluationResult.setVisible(false);
+				}
 			}
 		}
 
