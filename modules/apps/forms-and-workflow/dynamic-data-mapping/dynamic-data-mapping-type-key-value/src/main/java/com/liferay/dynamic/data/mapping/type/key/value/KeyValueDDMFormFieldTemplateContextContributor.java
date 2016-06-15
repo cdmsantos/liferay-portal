@@ -19,11 +19,14 @@ import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -31,7 +34,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Marcellus Tavares
  */
 @Component(
-	immediate = true, property = "ddm.form.field.type.name=key-value",
+	immediate = true, property = "ddm.form.field.type.name=key_value",
 	service = {
 		KeyValueDDMFormFieldTemplateContextContributor.class,
 		DDMFormFieldTemplateContextContributor.class
@@ -53,12 +56,33 @@ public class KeyValueDDMFormFieldTemplateContextContributor
 
 		parameters.put("placeholder", getValueString(placeholder, locale));
 
+		Map<String, String> stringsMap = new HashMap<>();
+
+		stringsMap.put(
+			"keyLabel",
+			LanguageUtil.get(ddmFormFieldRenderingContext.getLocale(), "field-name"));
+		stringsMap.put(
+			"done",
+			LanguageUtil.get(ddmFormFieldRenderingContext.getLocale(), "done"));
+		stringsMap.put(
+			"cancel",
+			LanguageUtil.get(ddmFormFieldRenderingContext.getLocale(), "cancel"));
+
+		parameters.put("strings", stringsMap);
+
 		LocalizedValue tooltip = (LocalizedValue)ddmFormField.getProperty(
 			"tooltip");
 
 		parameters.put("tooltip", getValueString(tooltip, locale));
 
 		return parameters;
+	}
+
+	protected ResourceBundle getResourceBundle(Locale locale) {
+		Class<?> clazz = getClass();
+
+		return ResourceBundleUtil.getBundle(
+			"content.Language", locale, clazz.getClassLoader());
 	}
 
 	protected String getValueString(Value value, Locale locale) {
