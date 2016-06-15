@@ -505,7 +505,12 @@ public class DDLFormAdminDisplayContext {
 		for (DDMFormField ddmFormField :
 				ddmFormFieldTypeSettingsDDMForm.getDDMFormFields()) {
 
-			jsonArray.put(ddmFormField.getName());
+			JSONObject jsonObject = _jsonFactory.createJSONObject();
+
+			jsonObject.put("localizable", ddmFormField.isLocalizable());
+			jsonObject.put("name", ddmFormField.getName());
+
+			jsonArray.put(jsonObject);
 		}
 
 		return jsonArray;
