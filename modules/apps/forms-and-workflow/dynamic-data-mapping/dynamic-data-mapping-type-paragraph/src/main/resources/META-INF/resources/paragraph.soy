@@ -13,9 +13,10 @@
  * @param label
  * @param name
  * @param text
+ * @param visible
  */
 {template .paragraph autoescape="deprecated-contextual"}
-	<div class="form-group liferay-ddm-form-field-paragraph" data-fieldname="{$name}">
+	<div class="form-group{$visible ? '' : ' hide'} liferay-ddm-form-field-paragraph" data-fieldname="{$name}">
 		<label class="control-label" for="{$name}">{$label}</label>
 
 		<div>{$text|noAutoescape}</div>
