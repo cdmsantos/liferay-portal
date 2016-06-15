@@ -18,6 +18,7 @@ import com.liferay.dynamic.data.mapping.annotations.DDMForm;
 import com.liferay.dynamic.data.mapping.annotations.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldRule;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldRuleType;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -82,8 +83,6 @@ public class DDMFormFieldFactoryHelper {
 		ddmFormField.setRepeatable(isDDMFormFieldRepeatable());
 		ddmFormField.setRequired(isDDMFormFieldRequired());
 		ddmFormField.setTip(getDDMFormFieldTip());
-		ddmFormField.setVisibilityExpression(
-			getDDMFormFieldVisibilityExpression());
 		ddmFormField.setVisible(isDDMFormFieldVisible());
 
 		return ddmFormField;
@@ -259,6 +258,13 @@ public class DDMFormFieldFactoryHelper {
 				new DDMFormFieldRule(
 					ruleAnnotation.errorMessage(), ruleAnnotation.expression(),
 					ruleAnnotation.type()));
+		}
+
+		if (Validator.isNotNull(getDDMFormFieldVisibilityExpression())) {
+			ddmFormFieldRules.add(
+				new DDMFormFieldRule(
+					getDDMFormFieldVisibilityExpression(),
+					DDMFormFieldRuleType.VISIBILITY));
 		}
 
 		return ddmFormFieldRules;
