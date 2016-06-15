@@ -242,10 +242,6 @@ public class DDMFormField implements Serializable {
 		return false;
 	}
 
-	public boolean isVisible() {
-		return MapUtil.getBoolean(_properties, "visible", true);
-	}
-
 	public void setDataType(String dataType) {
 		_properties.put("dataType", dataType);
 	}
@@ -340,10 +336,6 @@ public class DDMFormField implements Serializable {
 
 	public void setVisibilityExpression(String visibilityExpression) {
 		_properties.put("visibilityExpression", visibilityExpression);
-	}
-
-	public void setVisible(boolean visible) {
-		_properties.put("visible", visible);
 	}
 
 	private DDMForm _ddmForm;
