@@ -84,6 +84,7 @@ public class DDMFormFieldFactoryHelper {
 		ddmFormField.setTip(getDDMFormFieldTip());
 		ddmFormField.setVisibilityExpression(
 			getDDMFormFieldVisibilityExpression());
+		ddmFormField.setVisible(isDDMFormFieldVisible());
 
 		return ddmFormField;
 	}
@@ -411,6 +412,10 @@ public class DDMFormFieldFactoryHelper {
 
 	protected boolean isDDMFormFieldRequired() {
 		return _ddmFormField.required();
+	}
+
+	protected boolean isDDMFormFieldVisible() {
+		return _ddmFormField.visible();
 	}
 
 	protected boolean isLocalizableValue(String value) {
