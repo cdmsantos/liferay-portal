@@ -77,6 +77,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.portlet.ResourceURL;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -151,11 +152,11 @@ public class DDLFormAdminDisplayContext {
 	}
 
 	public String getDDMFormEvaluatorServletURL() {
-		String servletContextPath = getServletContextPath(
-			_ddmFormEvaluatorServlet);
+		ResourceURL resourceURL = _renderResponse.createResourceURL();
 
-		return servletContextPath.concat(
-			"/dynamic-data-mapping-form-evaluator/");
+		resourceURL.setResourceID("evaluateDDMFormFieldTypeSettings");
+
+		return resourceURL.toString();
 	}
 
 	public JSONObject getDDMFormFieldTypesDefinitionsMap()
