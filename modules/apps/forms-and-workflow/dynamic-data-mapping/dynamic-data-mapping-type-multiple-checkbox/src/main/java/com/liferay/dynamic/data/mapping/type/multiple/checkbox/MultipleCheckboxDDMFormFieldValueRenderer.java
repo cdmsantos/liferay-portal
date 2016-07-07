@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.type.multi.checkbox;
+package com.liferay.dynamic.data.mapping.type.multiple.checkbox;
 
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRenderer;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
@@ -30,14 +30,14 @@ import org.osgi.service.component.annotations.Reference;
  * @author Dylan Rebelak
  */
 @Component(
-	immediate = true, property = {"ddm.form.field.type.name=multi-checkbox"}
+	immediate = true, property = {"ddm.form.field.type.name=multiple-checkbox"}
 )
-public class MultiCheckboxDDMFormFieldValueRenderer
+public class MultipleCheckboxDDMFormFieldValueRenderer
 	implements DDMFormFieldValueRenderer {
 
 	@Override
 	public String render(DDMFormFieldValue ddmFormFieldValue, Locale locale) {
-		String optionValue = multiCheckboxDDMFormFieldValueAccessor.getValue(
+		String optionValue = multipleCheckboxDDMFormFieldValueAccessor.getValue(
 			ddmFormFieldValue, locale);
 
 		DDMFormFieldOptions ddmFormFieldOptions = getDDMFormFieldOptions(
@@ -62,7 +62,7 @@ public class MultiCheckboxDDMFormFieldValueRenderer
 	}
 
 	@Reference
-	protected MultiCheckboxDDMFormFieldValueAccessor
-		multiCheckboxDDMFormFieldValueAccessor;
+	protected MultipleCheckboxDDMFormFieldValueAccessor
+		multipleCheckboxDDMFormFieldValueAccessor;
 
 }

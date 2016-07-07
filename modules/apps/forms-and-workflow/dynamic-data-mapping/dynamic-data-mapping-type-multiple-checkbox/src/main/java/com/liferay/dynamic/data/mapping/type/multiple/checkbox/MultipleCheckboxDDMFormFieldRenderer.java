@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.type.multi.checkbox;
+package com.liferay.dynamic.data.mapping.type.multiple.checkbox;
 
 import com.liferay.dynamic.data.mapping.form.field.type.BaseDDMFormFieldRenderer;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldRenderer;
@@ -35,10 +35,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Dylan Rebelak
  */
 @Component(
-	immediate = true, property = "ddm.form.field.type.name=multi-checkbox",
+	immediate = true, property = "ddm.form.field.type.name=multiple-checkbox",
 	service = DDMFormFieldRenderer.class
 )
-public class MultiCheckboxDDMFormFieldRenderer
+public class MultipleCheckboxDDMFormFieldRenderer
 	extends BaseDDMFormFieldRenderer {
 
 	@Override
@@ -48,7 +48,7 @@ public class MultiCheckboxDDMFormFieldRenderer
 
 	@Override
 	public String getTemplateNamespace() {
-		return "ddm.multi_checkbox";
+		return "ddm.multiple_checkbox";
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class MultiCheckboxDDMFormFieldRenderer
 	@Activate
 	protected void activate(Map<String, Object> properties) {
 		_templateResource = getTemplateResource(
-			"/META-INF/resources/multi_checkbox.soy");
+			"/META-INF/resources/multiple_checkbox.soy");
 	}
 
 	@Deactivate
@@ -71,15 +71,15 @@ public class MultiCheckboxDDMFormFieldRenderer
 		DDMFormField ddmFormField,
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
 
-		MultiCheckboxDDMFormFieldContextHelper
-			multiCheckboxDDMFormFieldContextHelper =
-				new MultiCheckboxDDMFormFieldContextHelper(
+		MultipleCheckboxDDMFormFieldContextHelper
+			multipleCheckboxDDMFormFieldContextHelper =
+				new MultipleCheckboxDDMFormFieldContextHelper(
 					jsonFactory, ddmFormField.getDDMFormFieldOptions(),
 					ddmFormFieldRenderingContext.getValue(),
 					ddmFormField.getPredefinedValue(),
 					ddmFormFieldRenderingContext.getLocale());
 
-		return multiCheckboxDDMFormFieldContextHelper.getOptions();
+		return multipleCheckboxDDMFormFieldContextHelper.getOptions();
 	}
 
 	@Override

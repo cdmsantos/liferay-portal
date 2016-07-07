@@ -1,7 +1,7 @@
 {namespace ddm}
 
 /**
- * Prints the DDM form multi checkbox field.
+ * Prints the DDM form multiple checkbox field.
  *
  * @param? childElementsHTML
  * @param label
@@ -15,8 +15,8 @@
  * @param inline
  * @param dir
  */
-{template .multi_checkbox autoescape="deprecated-contextual"}
-	<div class="form-group liferay-ddm-form-field-multi-checkbox" data-fieldname="{$name}">
+{template .multiple_checkbox autoescape="deprecated-contextual"}
+	<div class="form-group liferay-ddm-form-field-multiple-checkbox" data-fieldname="{$name}">
         {if $showLabel and length($options) > 1}
 			<label class="control-label" for="{$name}">
 				{$label}
@@ -31,7 +31,7 @@
 			{/if}
 		{/if}
 
-        <div class="clearfix multi-checkbox-options">
+        <div class="clearfix multiple-checkbox-options">
             {foreach $option in $options}
                 {if not $inline}
                     <div class="checkbox">

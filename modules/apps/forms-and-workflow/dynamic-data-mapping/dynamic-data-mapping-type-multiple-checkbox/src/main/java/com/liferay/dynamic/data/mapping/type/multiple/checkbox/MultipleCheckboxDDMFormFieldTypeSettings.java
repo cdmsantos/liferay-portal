@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.type.multi.checkbox;
+package com.liferay.dynamic.data.mapping.type.multiple.checkbox;
 
 import com.liferay.dynamic.data.mapping.annotations.DDMForm;
 import com.liferay.dynamic.data.mapping.annotations.DDMFormField;
@@ -66,7 +66,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
 		)
 	}
 )
-public interface MultiCheckboxDDMFormFieldTypeSettings
+public interface MultipleCheckboxDDMFormFieldTypeSettings
 	extends DefaultDDMFormFieldTypeSettings {
 
 	@DDMFormField(label = "%inline", properties = {"showAsSwitcher=true"})

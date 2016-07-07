@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.type.multi.checkbox;
+package com.liferay.dynamic.data.mapping.type.multiple.checkbox;
 
 import com.liferay.dynamic.data.mapping.form.field.type.BaseDDMFormFieldType;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
@@ -28,24 +28,24 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"ddm.form.field.type.display.order:Integer=7",
 		"ddm.form.field.type.icon=check-circle",
-		"ddm.form.field.type.js.class.name=Liferay.DDM.Field.MultiCheckbox",
-		"ddm.form.field.type.js.module=liferay-ddm-form-field-multi-checkbox",
-		"ddm.form.field.type.name=multi-checkbox"
+		"ddm.form.field.type.js.class.name=Liferay.DDM.Field.MultipleCheckbox",
+		"ddm.form.field.type.js.module=liferay-ddm-form-field-multiple-checkbox",
+		"ddm.form.field.type.name=multiple-checkbox"
 	},
 	service = DDMFormFieldType.class
 )
-public class MultiCheckboxDDMFormFieldType extends BaseDDMFormFieldType {
+public class MultipleCheckboxDDMFormFieldType extends BaseDDMFormFieldType {
 
 	@Override
 	public Class<? extends DDMFormFieldTypeSettings>
 		getDDMFormFieldTypeSettings() {
 
-		return MultiCheckboxDDMFormFieldTypeSettings.class;
+		return MultipleCheckboxDDMFormFieldTypeSettings.class;
 	}
 
 	@Override
 	public String getName() {
-		return "multi-checkbox";
+		return "multiple-checkbox";
 	}
 
 }

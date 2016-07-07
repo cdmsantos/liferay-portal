@@ -13,9 +13,9 @@
  */
 
 AUI.add(
-	'liferay-ddm-form-field-multi-checkbox',
+	'liferay-ddm-form-field-multiple-checkbox',
 	function(A) {
-		var MultiCheckboxField = A.Component.create(
+		var MultipleCheckboxField = A.Component.create(
 			{
 				ATTRS: {
 
@@ -24,7 +24,7 @@ AUI.add(
 					},
 
 					type: {
-						value: 'multi-checkbox'
+						value: 'multiple-checkbox'
 					},
 
 					inline: {
@@ -40,14 +40,14 @@ AUI.add(
 
 				EXTENDS: Liferay.DDM.Renderer.Field,
 
-				NAME: 'liferay-ddm-form-field-multi-checkbox',
+				NAME: 'liferay-ddm-form-field-multiple-checkbox',
 
 				prototype: {
 					getTemplateContext: function() {
 						var instance = this;
 
 						return A.merge(
-							MultiCheckboxField.superclass.getTemplateContext.apply(instance, arguments),
+							MultipleCheckboxField.superclass.getTemplateContext.apply(instance, arguments),
 							{
 								showAsSwitcher: instance.get('showAsSwitcher'),
 								inline: instance.get('inline'),
@@ -109,7 +109,7 @@ AUI.add(
 
 						var container = instance.get('container');
 
-						MultiCheckboxField.superclass._renderErrorMessage.apply(instance, arguments);
+						MultipleCheckboxField.superclass._renderErrorMessage.apply(instance, arguments);
 
 						container.all('.help-block').appendTo(container);
 					},
@@ -119,7 +119,7 @@ AUI.add(
 
 						var container = instance.get('container');
 
-						MultiCheckboxField.superclass._showFeedback.apply(instance, arguments);
+						MultipleCheckboxField.superclass._showFeedback.apply(instance, arguments);
 
 						container.all('.form-control-feedback').appendTo(container);
 					}
@@ -127,7 +127,7 @@ AUI.add(
 			}
 		);
 
-		Liferay.namespace('DDM.Field').MultiCheckbox = MultiCheckboxField;
+		Liferay.namespace('DDM.Field').MultipleCheckbox = MultipleCheckboxField;
 	},
 	'',
 	{

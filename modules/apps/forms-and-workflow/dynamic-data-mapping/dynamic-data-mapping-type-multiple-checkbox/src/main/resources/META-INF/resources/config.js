@@ -16,24 +16,24 @@
 	AUI().applyConfig(
 		{
 			groups: {
-				'field-multi-checkbox': {
+				'field-multiple-checkbox': {
 					base: MODULE_PATH + '/',
 					combine: Liferay.AUI.getCombine(),
 					modules: {
-						'liferay-ddm-form-field-multi-checkbox': {
+						'liferay-ddm-form-field-multiple-checkbox': {
 							condition: {
 								trigger: 'liferay-ddm-form-renderer'
 							},
-							path: 'multi_checkbox_field.js',
+							path: 'multiple_checkbox_field.js',
 							requires: [
 								'liferay-ddm-form-renderer-field'
 							]
 						},
-						'liferay-ddm-form-field-multi-checkbox-template': {
+						'liferay-ddm-form-field-multiple-checkbox-template': {
 							condition: {
 								trigger: 'liferay-ddm-form-renderer'
 							},
-							path: 'multi_checkbox.soy.js',
+							path: 'multiple_checkbox.soy.js',
 							requires: [
 								'soyutils'
 							]

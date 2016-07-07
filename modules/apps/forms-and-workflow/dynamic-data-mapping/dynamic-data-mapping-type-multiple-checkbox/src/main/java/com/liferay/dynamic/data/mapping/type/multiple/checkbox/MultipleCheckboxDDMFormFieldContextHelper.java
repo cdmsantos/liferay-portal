@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.type.multi.checkbox;
+package com.liferay.dynamic.data.mapping.type.multiple.checkbox;
 
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
@@ -32,9 +32,9 @@ import java.util.Map;
 /**
  * @author Dylan Rebelak
  */
-public class MultiCheckboxDDMFormFieldContextHelper {
+public class MultipleCheckboxDDMFormFieldContextHelper {
 
-	public MultiCheckboxDDMFormFieldContextHelper(
+	public MultipleCheckboxDDMFormFieldContextHelper(
 		JSONFactory jsonFactory, DDMFormFieldOptions ddmFormFieldOptions,
 		String value, LocalizedValue predefinedValue, Locale locale) {
 
