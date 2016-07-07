@@ -30,6 +30,7 @@ import com.liferay.dynamic.data.mapping.upgrade.v1_0_0.UpgradeKernelPackage;
 import com.liferay.dynamic.data.mapping.upgrade.v1_0_0.UpgradeLastPublishDate;
 import com.liferay.dynamic.data.mapping.upgrade.v1_0_0.UpgradeSchema;
 import com.liferay.dynamic.data.mapping.upgrade.v1_0_1.UpgradeResourcePermission;
+import com.liferay.dynamic.data.mapping.upgrade.v1_0_2.UpgradeCheckboxFieldToMultipleCheckboxField;
 import com.liferay.dynamic.data.mapping.util.DDM;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
@@ -78,6 +79,12 @@ public class DDMServiceUpgrade implements UpgradeStepRegistrator {
 		registry.register(
 			"com.liferay.dynamic.data.mapping.service", "1.0.0", "1.0.1",
 			new UpgradeResourcePermission(_resourceActions));
+
+		registry.register(
+			"com.liferay.dynamic.data.mapping.service", "1.0.1", "1.0.2",
+			new UpgradeCheckboxFieldToMultipleCheckboxField(
+				_ddmFormJSONDeserializer, _ddmFormValuesJSONDeserializer,
+				_ddmFormValuesJSONSerializer));
 	}
 
 	@Reference(unbind = "-")
