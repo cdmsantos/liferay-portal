@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.Locale;
 
@@ -40,22 +39,21 @@ import org.osgi.service.component.annotations.Reference;
 	}
 )
 public class MultipleCheckboxDDMFormFieldValueAccessor
-	implements DDMFormFieldValueAccessor<String> {
+	implements DDMFormFieldValueAccessor<JSONArray> {
 
 	@Override
-	public String getValue(DDMFormFieldValue ddmFormFieldValue, Locale locale) {
+	public JSONArray getValue(
+		DDMFormFieldValue ddmFormFieldValue, Locale locale) {
+
 		try {
 			Value value = ddmFormFieldValue.getValue();
 
-			JSONArray jsonArray = jsonFactory.createJSONArray(
-				value.getString(locale));
-
-			return jsonArray.getString(0);
+			return jsonFactory.createJSONArray(value.getString(locale));
 		}
 		catch (JSONException jsone) {
 			_log.error("Unable to parse JSON array", jsone);
 
-			return StringPool.BLANK;
+			return jsonFactory.createJSONArray();
 		}
 	}
 
