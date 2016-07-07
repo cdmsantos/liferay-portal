@@ -59,6 +59,10 @@ public class SelectDDMFormFieldValueRenderer
 				LocalizedValue optionLabel =
 					ddmFormFieldOptions.getOptionLabels(optionValue);
 
+				if (optionLabel == null) {
+					continue;
+				}
+
 				sb.append(optionLabel.getString(locale));
 			}
 			else {
@@ -68,7 +72,9 @@ public class SelectDDMFormFieldValueRenderer
 			sb.append(StringPool.COMMA_AND_SPACE);
 		}
 
-		sb.setIndex(sb.index() - 1);
+		if (sb.index() > 0) {
+			sb.setIndex(sb.index() - 1);
+		}
 
 		return sb.toString();
 	}

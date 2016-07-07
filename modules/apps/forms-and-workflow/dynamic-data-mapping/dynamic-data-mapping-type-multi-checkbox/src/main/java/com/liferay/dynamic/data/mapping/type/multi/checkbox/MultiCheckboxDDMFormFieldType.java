@@ -30,6 +30,7 @@ import org.osgi.service.component.annotations.Component;
 		"ddm.form.field.type.icon=check-circle",
 		"ddm.form.field.type.js.class.name=Liferay.DDM.Field.MultiCheckbox",
 		"ddm.form.field.type.js.module=liferay-ddm-form-field-multi-checkbox",
+		"ddm.form.field.type.label=multi-checkbox-field-type-label",
 		"ddm.form.field.type.name=multi-checkbox"
 	},
 	service = DDMFormFieldType.class
