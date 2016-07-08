@@ -11,6 +11,8 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+ 
+ apply plugin: "com.liferay.lang.merger"
 
 dependencies {
 	provided group: "com.liferay", name: "com.liferay.dynamic.data.mapping.api", version: "3.0.0"
@@ -25,6 +27,13 @@ task wrapSoyTemplates
 
 classes {
 	dependsOn wrapSoyTemplates
+}
+
+mergeLang {
+	sourceDirs = [
+		"../dynamic-data-mapping-lang/src/main/resources/content",
+		"src/main/resources/content"
+	]
 }
 
 transpileJS {
