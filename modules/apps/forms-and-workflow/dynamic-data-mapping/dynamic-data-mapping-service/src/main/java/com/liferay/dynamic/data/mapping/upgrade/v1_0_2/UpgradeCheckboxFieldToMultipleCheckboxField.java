@@ -157,7 +157,7 @@ public class UpgradeCheckboxFieldToMultipleCheckboxField
 		checkboxFieldJSONObject.put(
 			"predefinedValue", getPredefinedValue(checkboxFieldJSONObject));
 
-		checkboxFieldJSONObject.put("type", "multi-checkbox");
+		checkboxFieldJSONObject.put("type", "multiple-checkbox");
 	}
 
 	protected void transformCheckboxDDMFormFieldValues(
