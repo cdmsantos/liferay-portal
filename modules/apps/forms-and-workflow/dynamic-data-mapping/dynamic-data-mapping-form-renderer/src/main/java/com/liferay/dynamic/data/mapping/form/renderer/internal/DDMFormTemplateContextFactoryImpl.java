@@ -15,6 +15,7 @@
 package com.liferay.dynamic.data.mapping.form.renderer.internal;
 
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluator;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormTemplateContextFactory;
@@ -100,6 +101,13 @@ public class DDMFormTemplateContextFactoryImpl
 		templateContext.put(
 			"evaluatorURL", ddmFormRenderingContext.getEvaluatorURL());
 
+		List<DDMFormFieldType> ddmFormFieldTypes =
+			_ddmFormFieldTypeServicesTracker.getDDMFormFieldTypes();
+
+		templateContext.put(
+			"fieldTypes",
+			_ddmFormFieldTypesJSONSerializer.serialize(ddmFormFieldTypes));
+
 		List<Object> pages = getPages(
 			ddmForm, ddmFormLayout, ddmFormRenderingContext);
 
@@ -107,6 +115,8 @@ public class DDMFormTemplateContextFactoryImpl
 		templateContext.put(
 			"portletNamespace", ddmFormRenderingContext.getPortletNamespace());
 		templateContext.put("readOnly", ddmFormRenderingContext.isReadOnly());
+		templateContext.put(
+			"recordSetId", ddmFormRenderingContext.getRecordSetId());
 
 		Locale locale = ddmFormRenderingContext.getLocale();
 
