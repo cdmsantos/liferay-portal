@@ -109,13 +109,22 @@ AUI.add(
 							function(settingsForm) {
 								instance.set('settingsForm', settingsForm);
 
-								settingsForm.render();
+								try {
+									settingsForm.render();
+								}
+								catch (e) {
+									console.log(e.stack);
+								}
 
 								var nameField = settingsForm.getField('name');
 
-								nameField.validate(
-									function() {
-										footerNode.show();
+								// nameField.validate(
+								// 	function() {
+										
+								// 	}
+								// );
+
+								footerNode.show();
 										instance._showSettingsForm();
 										instance._toggleLoadingAnimation(false);
 										instance._showDefaultToolbar();
@@ -126,8 +135,6 @@ AUI.add(
 										var labelField = settingsForm.getField('label');
 
 										labelField.focus();
-									}
-								);
 
 								var settings = field.getSettings(settingsForm);
 

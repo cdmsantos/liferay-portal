@@ -146,7 +146,7 @@ AUI.add(
 							instance._request = A.io.request(
 								instance.get('evaluatorURL'),
 								{
-									data: Liferay.Util.ns(portletNamespace, payload),
+									data: payload,
 									method: 'POST',
 									on: {
 										failure: function(event) {

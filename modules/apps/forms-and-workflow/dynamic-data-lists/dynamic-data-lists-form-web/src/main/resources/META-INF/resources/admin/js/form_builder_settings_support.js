@@ -155,9 +155,11 @@ AUI.add(
 					{
 						context: context,
 						dataProviders: instance.get('dataProviders'),
+						definition: context.definition,
 						editMode: builder.get('recordSetId') === 0 || instance.isPersisted(),
 						evaluatorURL: instance.get('evaluatorURL'),
 						field: instance,
+						layout: context.layout,
 						portletNamespace: instance.get('portletNamespace'),
 						templateNamespace: 'ddm.settings_form'
 					}

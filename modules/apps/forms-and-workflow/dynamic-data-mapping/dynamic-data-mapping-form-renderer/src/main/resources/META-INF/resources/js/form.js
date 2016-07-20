@@ -18,12 +18,16 @@ AUI.add(
 						value: ''
 					},
 
-					portletNamespace: {
-						value: ''
+					definition: {
+						value: {}
 					},
 
-					recordSetId: {
-						value: 0
+					layout: {
+						value: {}
+					},
+
+					portletNamespace: {
+						value: ''
 					},
 
 					strings: {
@@ -82,7 +86,9 @@ AUI.add(
 						var instance = this;
 
 						return {
-							recordSetId: instance.get('recordSetId'),
+							portletNamespace: instance.get('portletNamespace'),
+							serializedDDMForm: instance.get('definition'),
+							serializedDDMFormLayout: instance.get('layout'),
 							serializedDDMFormValues: JSON.stringify(instance.toJSON())
 						};
 					},
