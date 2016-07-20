@@ -20,12 +20,13 @@ import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServices
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRendererConstants;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
+import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.portal.kernel.language.LanguageConstants;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
@@ -36,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author Marcellus Tavares
@@ -126,7 +128,8 @@ public class DDMFormFieldTemplateContextFactory {
 
 		setDDMFormFieldTemplateContextNestedTemplateContexts(
 			ddmFormFieldTemplateContext, nestedDDMFormFieldTemplateContext);
-		setDDMFormFieldTemplateContextReadOnly(ddmFormFieldTemplateContext);
+		setDDMFormFieldTemplateContextReadOnly(
+			ddmFormFieldTemplateContext, ddmFormField.isReadOnly());
 		setDDMFormFieldTemplateContextRepeatable(
 			ddmFormFieldTemplateContext, ddmFormField.isRepeatable());
 		setDDMFormFieldTemplateContextRequired(
@@ -136,9 +139,11 @@ public class DDMFormFieldTemplateContextFactory {
 		setDDMFormFieldTemplateContextType(
 			ddmFormFieldTemplateContext, ddmFormField.getType());
 		setDDMFormFieldTemplateContextValid(ddmFormFieldTemplateContext);
-		setDDMFormFieldTemplateContextValue(ddmFormFieldTemplateContext);
+		setDDMFormFieldTemplateContextValue(
+			ddmFormFieldTemplateContext, ddmFormFieldValue.getValue());
 		setDDMFormFieldTemplateContextVisible(ddmFormFieldTemplateContext);
-		setDDMFormFieldTemplateContextOptions(ddmFormFieldTemplateContext);
+		setDDMFormFieldTemplateContextOptions(
+			ddmFormFieldTemplateContext, ddmFormField.getDDMFormFieldOptions());
 
 		// Contributed template parameters
 
@@ -302,17 +307,20 @@ public class DDMFormFieldTemplateContextFactory {
 	}
 
 	protected void setDDMFormFieldTemplateContextOptions(
-		Map<String, Object> ddmFormFieldTemplateContext) {
-
-		List<KeyValuePair> options = _ddmFormFieldEvaluationResult.getOptions();
+		Map<String, Object> ddmFormFieldTemplateContext,
+		DDMFormFieldOptions ddmFormFieldOptions) {
+		
+		Map<String, LocalizedValue> options = ddmFormFieldOptions.getOptions();
 
 		List<Map<String, String>> list = new ArrayList<>();
 
-		for (KeyValuePair keyValue : options) {
+		for (Entry<String, LocalizedValue> entry : options.entrySet()) {
 			Map<String, String> option = new HashMap<>();
+			
+			LocalizedValue localizedValue = entry.getValue();
 
-			option.put("label", keyValue.getValue());
-			option.put("value", keyValue.getKey());
+			option.put("label", localizedValue.getString(_locale));
+			option.put("value", entry.getKey());
 
 			list.add(option);
 		}
@@ -321,13 +329,7 @@ public class DDMFormFieldTemplateContextFactory {
 	}
 
 	protected void setDDMFormFieldTemplateContextReadOnly(
-		Map<String, Object> ddmFormFieldTemplateContext) {
-
-		boolean readOnly = _ddmFormFieldEvaluationResult.isReadOnly();
-
-		if (_ddmFormRenderingContext.isReadOnly()) {
-			readOnly = true;
-		}
+		Map<String, Object> ddmFormFieldTemplateContext, boolean readOnly) {
 
 		ddmFormFieldTemplateContext.put("readOnly", readOnly);
 	}
@@ -366,10 +368,9 @@ public class DDMFormFieldTemplateContextFactory {
 	}
 
 	protected void setDDMFormFieldTemplateContextValue(
-		Map<String, Object> ddmFormFieldTemplateContext) {
+		Map<String, Object> ddmFormFieldTemplateContext, Value value) {
 
-		ddmFormFieldTemplateContext.put(
-			"value", _ddmFormFieldEvaluationResult.getValue());
+		ddmFormFieldTemplateContext.put("value", value.getString(_locale));
 	}
 
 	protected void setDDMFormFieldTemplateContextVisible(

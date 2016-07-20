@@ -14,7 +14,7 @@
 
 package com.liferay.dynamic.data.lists.form.web.internal.portlet.action;
 
-import com.liferay.dynamic.data.lists.form.web.constants.DDLFormPortletKeys;
+import com.liferay.dynamic.data.lists.form.web.internal.constants.DDLFormPortletKeys;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
@@ -44,7 +44,6 @@ import java.util.Map;
 
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
-import javax.portlet.ResourceURL;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -132,13 +131,6 @@ public class GetFieldSettingsDDMFormContextMVCResourceCommand
 		ddmFormRenderingContext.setLocale(resourceRequest.getLocale());
 		ddmFormRenderingContext.setPortletNamespace(
 			resourceResponse.getNamespace());
-
-		ResourceURL resourceURL = resourceResponse.createResourceURL();
-
-		resourceURL.setParameter("type", type);
-		resourceURL.setResourceID("evaluateDDMFormFieldTypeSettings");
-
-		ddmFormRenderingContext.setEvaluatorURL(resourceURL.toString());
 
 		Map<String, Object> templateContext =
 			_ddmFormTemplateContextFactory.create(

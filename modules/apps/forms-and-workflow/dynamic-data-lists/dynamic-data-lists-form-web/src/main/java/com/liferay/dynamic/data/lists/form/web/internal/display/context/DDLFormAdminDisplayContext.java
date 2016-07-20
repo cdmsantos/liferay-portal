@@ -94,7 +94,7 @@ public class DDLFormAdminDisplayContext {
 		DDLRecordLocalService ddlRecordLocalService,
 		DDLRecordSetService ddlRecordSetService,
 		DDMDataProviderInstanceLocalService ddmDataProviderInstanceLocalService,
-		Servlet ddmFormEvaluatorServlet,
+		Servlet ddmFormRendererEvaluatorServlet,
 		DDMFormFieldTypeServicesTracker ddmFormFieldTypeServicesTracker,
 		DDMFormFieldTypesJSONSerializer ddmFormFieldTypesJSONSerializer,
 		DDMFormJSONSerializer ddmFormJSONSerializer,
@@ -113,7 +113,7 @@ public class DDLFormAdminDisplayContext {
 		_ddlRecordSetService = ddlRecordSetService;
 		_ddmDataProviderInstanceLocalService =
 			ddmDataProviderInstanceLocalService;
-		_ddmFormEvaluatorServlet = ddmFormEvaluatorServlet;
+		_ddmFormRendererEvaluatorServlet = ddmFormRendererEvaluatorServlet;
 		_ddmFormFieldTypeServicesTracker = ddmFormFieldTypeServicesTracker;
 		_ddmFormFieldTypesJSONSerializer = ddmFormFieldTypesJSONSerializer;
 		_ddmFormJSONSerializer = ddmFormJSONSerializer;
@@ -174,10 +174,10 @@ public class DDLFormAdminDisplayContext {
 
 	public String getDDMFormEvaluatorServletURL() {
 		String servletContextPath = getServletContextPath(
-			_ddmFormEvaluatorServlet);
+			_ddmFormRendererEvaluatorServlet);
 
 		return servletContextPath.concat(
-			"/dynamic-data-mapping-form-evaluator/");
+			"/dynamic-data-mapping-form-renderer-evaluator/");
 	}
 
 	public JSONArray getDDMFormFieldTypesJSONArray() throws PortalException {
@@ -657,7 +657,7 @@ public class DDLFormAdminDisplayContext {
 	private final DDLRecordSetService _ddlRecordSetService;
 	private final DDMDataProviderInstanceLocalService
 		_ddmDataProviderInstanceLocalService;
-	private final Servlet _ddmFormEvaluatorServlet;
+	private final Servlet _ddmFormRendererEvaluatorServlet;
 	private final DDMFormFieldTypeServicesTracker
 		_ddmFormFieldTypeServicesTracker;
 	private final DDMFormFieldTypesJSONSerializer

@@ -117,12 +117,64 @@ public class SelectDDMFormFieldTemplateContextContributor
 		DDMFormField ddmFormField,
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
 
+		DDMFormFieldOptions ddmFormFieldOptions = new DDMFormFieldOptions();
+
 		String dataSourceType = GetterUtil.getString(
 			ddmFormField.getProperty("dataSourceType"), "manual");
 
-		if (Objects.equals(dataSourceType, "manual")) {
-			DDMFormFieldOptions ddmFormFieldOptions = new DDMFormFieldOptions();
+		if (Objects.equals(dataSourceType, "data-provider")) {
+			ddmFormFieldOptions.setDefaultLocale(
+				ddmFormFieldRenderingContext.getLocale());
 
+			long ddmDataProviderInstanceId = GetterUtil.getLong(
+				ddmFormField.getProperty("ddmDataProviderInstanceId"));
+
+			try {
+				DDMDataProviderInstance ddmDataProviderInstance =
+					ddmDataProviderInstanceService.getDataProviderInstance(
+						ddmDataProviderInstanceId);
+
+				DDMDataProvider ddmDataProvider =
+					ddmDataProviderTracker.getDDMDataProvider(
+						ddmDataProviderInstance.getType());
+
+				DDMForm ddmForm = DDMFormFactory.create(
+					ddmDataProvider.getSettings());
+
+				DDMFormValues ddmFormValues =
+					ddmFormValuesJSONDeserializer.deserialize(
+						ddmForm, ddmDataProviderInstance.getDefinition());
+
+				DDMDataProviderContext ddmDataProviderContext =
+					new DDMDataProviderContext(ddmFormValues);
+
+				List<DDMDataProviderContextContributor>
+					ddmDataProviderContextContributors =
+						ddmDataProviderTracker.
+							getDDMDataProviderContextContributors(
+								ddmDataProviderInstance.getType());
+
+				addDDMDataProviderContextParameters(
+					ddmFormFieldRenderingContext.getHttpServletRequest(),
+					ddmDataProviderContext, ddmDataProviderContextContributors);
+
+				List<KeyValuePair> keyValuePairs = ddmDataProvider.getData(
+					ddmDataProviderContext);
+
+				for (KeyValuePair keyValuePair : keyValuePairs) {
+					ddmFormFieldOptions.addOptionLabel(
+						keyValuePair.getValue(),
+						ddmFormFieldRenderingContext.getLocale(),
+						keyValuePair.getKey());
+				}
+
+				return ddmFormFieldOptions;
+			}
+			catch (PortalException pe) {
+				_log.error("Unable to fetch data provider data", pe);
+			}
+		}
+		else {
 			List<Map<String, String>> keyValuePairs =
 				(List<Map<String, String>>)
 					ddmFormFieldRenderingContext.getProperty("options");
@@ -137,64 +189,9 @@ public class SelectDDMFormFieldTemplateContextContributor
 					ddmFormFieldRenderingContext.getLocale(),
 					keyValuePair.get("label"));
 			}
-
-			return ddmFormFieldOptions;
 		}
 
-		DDMFormFieldOptions ddmFormFieldOptions = new DDMFormFieldOptions();
-
-		ddmFormFieldOptions.setDefaultLocale(
-			ddmFormFieldRenderingContext.getLocale());
-
-		long ddmDataProviderInstanceId = GetterUtil.getLong(
-			ddmFormField.getProperty("ddmDataProviderInstanceId"));
-
-		try {
-			DDMDataProviderInstance ddmDataProviderInstance =
-				ddmDataProviderInstanceService.getDataProviderInstance(
-					ddmDataProviderInstanceId);
-
-			DDMDataProvider ddmDataProvider =
-				ddmDataProviderTracker.getDDMDataProvider(
-					ddmDataProviderInstance.getType());
-
-			DDMForm ddmForm = DDMFormFactory.create(
-				ddmDataProvider.getSettings());
-
-			DDMFormValues ddmFormValues =
-				ddmFormValuesJSONDeserializer.deserialize(
-					ddmForm, ddmDataProviderInstance.getDefinition());
-
-			DDMDataProviderContext ddmDataProviderContext =
-				new DDMDataProviderContext(ddmFormValues);
-
-			List<DDMDataProviderContextContributor>
-				ddmDataProviderContextContributors =
-					ddmDataProviderTracker.
-						getDDMDataProviderContextContributors(
-							ddmDataProviderInstance.getType());
-
-			addDDMDataProviderContextParameters(
-				ddmFormFieldRenderingContext.getHttpServletRequest(),
-				ddmDataProviderContext, ddmDataProviderContextContributors);
-
-			List<KeyValuePair> keyValuePairs = ddmDataProvider.getData(
-				ddmDataProviderContext);
-
-			for (KeyValuePair keyValuePair : keyValuePairs) {
-				ddmFormFieldOptions.addOptionLabel(
-					keyValuePair.getValue(),
-					ddmFormFieldRenderingContext.getLocale(),
-					keyValuePair.getKey());
-			}
-
-			return ddmFormFieldOptions;
-		}
-		catch (PortalException pe) {
-			_log.error("Unable to fetch data provider data", pe);
-		}
-
-		return new DDMFormFieldOptions();
+		return ddmFormFieldOptions;
 	}
 
 	protected List<Object> getOptions(
