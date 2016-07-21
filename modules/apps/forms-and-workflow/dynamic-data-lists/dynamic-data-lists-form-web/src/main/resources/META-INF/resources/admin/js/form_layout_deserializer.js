@@ -118,7 +118,6 @@ AUI.add(
 						return new fieldClass(
 							{
 								context: context,
-								dataProviders: builder.get('dataProviders'),
 								evaluatorURL: builder.get('evaluatorURL'),
 								getFieldNameSettingFormContextURL: builder.get('getFieldNameSettingFormContextURL'),
 								getFieldTypeSettingFormContextURL: builder.get('getFieldTypeSettingFormContextURL'),

@@ -30,9 +30,6 @@ AUI.add(
 						}
 					},
 
-					dataProviders: {
-					},
-
 					definition: {
 						validator: Lang.isObject
 					},
@@ -165,7 +162,6 @@ AUI.add(
 								fieldType.get('defaultConfig'),
 								{
 									builder: instance,
-									dataProviders: instance.get('dataProviders'),
 									evaluatorURL: instance.get('evaluatorURL'),
 									getFieldTypeSettingFormContextURL: instance.get('getFieldTypeSettingFormContextURL'),
 									portletNamespace: instance.get('portletNamespace'),

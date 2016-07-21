@@ -109,6 +109,8 @@ AUI.add(
 							function(settingsForm) {
 								instance.set('settingsForm', settingsForm);
 
+								instance._showSettingsForm();
+
 								try {
 									settingsForm.render();
 								}
@@ -116,25 +118,20 @@ AUI.add(
 									console.log(e.stack);
 								}
 
-								var nameField = settingsForm.getField('name');
+								settingsForm.evaluate(
+									function() {
+										settingsForm.hideErrorMessages();
 
-								// nameField.validate(
-								// 	function() {
-										
-								// 	}
-								// );
-
-								footerNode.show();
-										instance._showSettingsForm();
 										instance._toggleLoadingAnimation(false);
 										instance._showDefaultToolbar();
-
-										instance._modal.show();
+										footerNode.show();
 										instance.align();
+									}
+								);
 
-										var labelField = settingsForm.getField('label');
+								var labelField = settingsForm.getField('label');
 
-										labelField.focus();
+								labelField.focus();
 
 								var settings = field.getSettings(settingsForm);
 

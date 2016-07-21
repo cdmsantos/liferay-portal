@@ -44,6 +44,14 @@ AUI.add(
 				evaluator.destroy();
 			},
 
+			evaluate: function(callback) {
+				var instance = this;
+
+				var evaluator = instance.get('evaluator');
+
+				evaluator.evaluate(instance, callback);
+			},
+
 			processEvaluationResultEvent: function(event) {
 				var instance = this;
 

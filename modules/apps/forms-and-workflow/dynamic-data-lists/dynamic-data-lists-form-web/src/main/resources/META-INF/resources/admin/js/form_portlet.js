@@ -9,9 +9,6 @@ AUI.add(
 		var DDLPortlet = A.Component.create(
 			{
 				ATTRS: {
-					dataProviders: {
-					},
-
 					definition: {
 					},
 
@@ -473,7 +470,6 @@ AUI.add(
 
 						return new Liferay.DDL.FormBuilder(
 							{
-								dataProviders: instance.get('dataProviders'),
 								definition: instance.get('definition'),
 								evaluatorURL: instance.get('evaluatorURL'),
 								getFieldTypeSettingFormContextURL: instance.get('getFieldTypeSettingFormContextURL'),

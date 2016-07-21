@@ -204,7 +204,6 @@ renderResponse.setTitle((recordSet == null) ? LanguageUtil.get(request, "new-for
 									'formPortlet',
 									new Liferay.DDL.Portlet(
 										{
-											dataProviders: <%= ddlFormAdminDisplayContext.getSerializedDDMDataProviders() %>,
 											definition: <%= ddlFormAdminDisplayContext.getSerializedDDMForm() %>,
 											description: '<%= HtmlUtil.escapeJS(description) %>',
 											editForm: event.form,

@@ -22,9 +22,6 @@ AUI.add(
 						value: false
 					},
 
-					dataProviders: {
-					},
-
 					field: {
 					}
 				},
@@ -36,8 +33,6 @@ AUI.add(
 				prototype: {
 					initializer: function() {
 						var instance = this;
-
-						instance._initDataProvider();
 
 						instance._eventHandlers.push(
 							instance.after('render', instance._afterSettingsFormRender),
@@ -154,35 +149,6 @@ AUI.add(
 						instance.alignModal();
 					},
 
-					_afterDDMDataProviderInstanceIdFieldRender: function(event) {
-						var instance = this;
-
-						var ddmDataProviderInstanceIdField = event.target;
-
-						var ddmDataProviderInstanceId = ddmDataProviderInstanceIdField.get('value');
-
-						ddmDataProviderInstanceIdField.getInputNode().html(
-							instance.get('dataProviders').map(
-								function(item) {
-									var status = '';
-
-									if (item.id === ddmDataProviderInstanceId) {
-										status = 'selected';
-									}
-
-									return Lang.sub(
-										TPL_OPTION,
-										{
-											label: item.name,
-											status: status,
-											value: item.id
-										}
-									);
-								}
-							).join('')
-						);
-					},
-
 					_afterLabelFieldNormalizeKey: function(key) {
 						var instance = this;
 
@@ -288,18 +254,6 @@ AUI.add(
 						}
 
 						return hasErrors;
-					},
-
-					_initDataProvider: function() {
-						var instance = this;
-
-						var ddmDataProviderInstanceIdField = instance.getField('ddmDataProviderInstanceId');
-
-						if (ddmDataProviderInstanceIdField) {
-							instance._eventHandlers.push(
-								ddmDataProviderInstanceIdField.after('render', A.bind('_afterDDMDataProviderInstanceIdFieldRender', instance))
-							);
-						}
 					},
 
 					_onClickModeToggler: function(event) {
