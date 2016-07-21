@@ -71,6 +71,8 @@ public class DDMFormRendererEvaluatorServlet extends HttpServlet {
 		ddmFormRenderingContext.setHttpServletResponse(response);
 		ddmFormRenderingContext.setLocale(request.getLocale());
 		ddmFormRenderingContext.setPortletNamespace(portletNamespace);
+		ddmFormRenderingContext.setEvaluatorURL(
+			getDDMFormRendererEvaluatorServletURL(request));
 
 		return ddmFormRenderingContext;
 	}
@@ -139,6 +141,15 @@ public class DDMFormRendererEvaluatorServlet extends HttpServlet {
 
 		ServletResponseUtil.write(
 			response, jsonSerializer.serializeDeep(pages));
+	}
+
+	protected String getDDMFormRendererEvaluatorServletURL(
+		HttpServletRequest request) {
+
+		String servletContextPath = request.getContextPath();
+
+		return servletContextPath.concat(
+			"/dynamic-data-mapping-form-renderer-evaluator/");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

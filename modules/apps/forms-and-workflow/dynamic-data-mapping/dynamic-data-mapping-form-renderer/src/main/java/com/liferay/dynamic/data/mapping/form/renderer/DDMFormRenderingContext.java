@@ -54,10 +54,6 @@ public class DDMFormRenderingContext {
 		return _portletNamespace;
 	}
 
-	public long getRecordSetId() {
-		return _recordSetId;
-	}
-
 	public String getSubmitLabel() {
 		return _submitLabel;
 	}
@@ -108,10 +104,6 @@ public class DDMFormRenderingContext {
 		_readOnly = readOnly;
 	}
 
-	public void setRecordSetId(long recordSetId) {
-		_recordSetId = recordSetId;
-	}
-
 	public void setShowRequiredFieldsWarning(
 		boolean showRequiredFieldsWarning) {
 
@@ -134,7 +126,6 @@ public class DDMFormRenderingContext {
 	private Locale _locale;
 	private String _portletNamespace;
 	private boolean _readOnly;
-	private long _recordSetId;
 	private boolean _showRequiredFieldsWarning = true;
 	private boolean _showSubmitButton;
 	private String _submitLabel;

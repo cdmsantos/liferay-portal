@@ -44,6 +44,8 @@ import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import javax.servlet.Servlet;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -190,13 +192,21 @@ public class DDLFormPortlet extends MVCPortlet {
 		return type.equals(LayoutConstants.TYPE_SHARED_PORTLET);
 	}
 
+	@Reference(
+		target = "(osgi.http.whiteboard.servlet.name=com.liferay.dynamic.data.mapping.form.renderer.internal.servlet.DDMFormRendererEvaluatorServlet)",
+		unbind = "-"
+	)
+	protected void setDDMFormEvaluatorServlet(Servlet ddmFormEvaluatorServlet) {
+		_ddmFormEvaluatorServlet = ddmFormEvaluatorServlet;
+	}
+
 	protected void setRenderRequestAttributes(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortalException {
 
 		DDLFormDisplayContext ddlFormDisplayContext = new DDLFormDisplayContext(
 			renderRequest, renderResponse, _ddlRecordSetService,
-			_ddmFormRenderer, _ddmFormValuesFactory,
+			_ddmFormRenderer, _ddmFormEvaluatorServlet, _ddmFormValuesFactory,
 			_workflowDefinitionLinkLocalService);
 
 		renderRequest.setAttribute(
@@ -207,6 +217,8 @@ public class DDLFormPortlet extends MVCPortlet {
 
 	@Reference
 	private DDLRecordSetService _ddlRecordSetService;
+
+	private Servlet _ddmFormEvaluatorServlet;
 
 	@Reference
 	private DDMFormRenderer _ddmFormRenderer;

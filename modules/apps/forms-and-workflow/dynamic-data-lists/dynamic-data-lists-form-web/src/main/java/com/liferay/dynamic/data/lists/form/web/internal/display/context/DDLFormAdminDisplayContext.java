@@ -149,7 +149,15 @@ public class DDLFormAdminDisplayContext {
 			_ddlRecordLocalService, _ddmFormFieldTypeServicesTracker,
 			_storageEngine);
 	}
-	
+
+	public String getDDMFormEvaluatorServletURL() {
+		String servletContextPath = getServletContextPath(
+			_ddmFormRendererEvaluatorServlet);
+
+		return servletContextPath.concat(
+			"/dynamic-data-mapping-form-renderer-evaluator/");
+	}
+
 	public JSONObject getDDMFormFieldTypesDefinitionsMap()
 		throws PortalException {
 
@@ -170,14 +178,6 @@ public class DDLFormAdminDisplayContext {
 		}
 
 		return jsonObject;
-	}
-
-	public String getDDMFormEvaluatorServletURL() {
-		String servletContextPath = getServletContextPath(
-			_ddmFormRendererEvaluatorServlet);
-
-		return servletContextPath.concat(
-			"/dynamic-data-mapping-form-renderer-evaluator/");
 	}
 
 	public JSONArray getDDMFormFieldTypesJSONArray() throws PortalException {
@@ -214,26 +214,6 @@ public class DDLFormAdminDisplayContext {
 			recordSet.getDDMStructureId());
 
 		return _ddmStucture;
-	}
-
-	protected JSONArray getDDMFormFieldTypePropertyNames(
-			DDMForm ddmFormFieldTypeSettingsDDMForm)
-		throws PortalException {
-
-		JSONArray jsonArray = _jsonFactory.createJSONArray();
-
-		for (DDMFormField ddmFormField :
-				ddmFormFieldTypeSettingsDDMForm.getDDMFormFields()) {
-
-			JSONObject jsonObject = _jsonFactory.createJSONObject();
-
-			jsonObject.put("localizable", ddmFormField.isLocalizable());
-			jsonObject.put("name", ddmFormField.getName());
-
-			jsonArray.put(jsonObject);
-		}
-
-		return jsonArray;
 	}
 
 	public String getDisplayStyle() {
@@ -515,6 +495,26 @@ public class DDLFormAdminDisplayContext {
 		return orderByComparator;
 	}
 
+	protected JSONArray getDDMFormFieldTypePropertyNames(
+			DDMForm ddmFormFieldTypeSettingsDDMForm)
+		throws PortalException {
+
+		JSONArray jsonArray = _jsonFactory.createJSONArray();
+
+		for (DDMFormField ddmFormField :
+				ddmFormFieldTypeSettingsDDMForm.getDDMFormFields()) {
+
+			JSONObject jsonObject = _jsonFactory.createJSONObject();
+
+			jsonObject.put("localizable", ddmFormField.isLocalizable());
+			jsonObject.put("name", ddmFormField.getName());
+
+			jsonArray.put(jsonObject);
+		}
+
+		return jsonArray;
+	}
+
 	protected String getDisplayStyle(
 		PortletRequest portletRequest,
 		DDLFormWebConfiguration ddlFormWebConfiguration,
@@ -657,7 +657,6 @@ public class DDLFormAdminDisplayContext {
 	private final DDLRecordSetService _ddlRecordSetService;
 	private final DDMDataProviderInstanceLocalService
 		_ddmDataProviderInstanceLocalService;
-	private final Servlet _ddmFormRendererEvaluatorServlet;
 	private final DDMFormFieldTypeServicesTracker
 		_ddmFormFieldTypeServicesTracker;
 	private final DDMFormFieldTypesJSONSerializer
@@ -665,6 +664,7 @@ public class DDLFormAdminDisplayContext {
 	private final DDMFormJSONSerializer _ddmFormJSONSerializer;
 	private final DDMFormLayoutJSONSerializer _ddmFormLayoutJSONSerializer;
 	private final DDMFormRenderer _ddmFormRenderer;
+	private final Servlet _ddmFormRendererEvaluatorServlet;
 	private final DDMFormValuesFactory _ddmFormValuesFactory;
 	private final DDMFormValuesMerger _ddmFormValuesMerger;
 	private final DDMStructureLocalService _ddmStructureLocalService;

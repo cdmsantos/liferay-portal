@@ -121,8 +121,6 @@ public class DDMFormTemplateContextFactoryImpl
 		templateContext.put(
 			"portletNamespace", ddmFormRenderingContext.getPortletNamespace());
 		templateContext.put("readOnly", ddmFormRenderingContext.isReadOnly());
-		templateContext.put(
-			"recordSetId", ddmFormRenderingContext.getRecordSetId());
 
 		Locale locale = ddmFormRenderingContext.getLocale();
 
@@ -243,14 +241,14 @@ public class DDMFormTemplateContextFactoryImpl
 
 	@Reference
 	private DDMFormFieldTypeServicesTracker _ddmFormFieldTypeServicesTracker;
-	
+
 	@Reference
-	private DDMFormLayoutJSONSerializer _ddmFormLayoutJSONSerializer;
-	
+	private DDMFormFieldTypesJSONSerializer _ddmFormFieldTypesJSONSerializer;
+
 	@Reference
 	private DDMFormJSONSerializer _ddmFormJSONSerializer;
 
 	@Reference
-	private DDMFormFieldTypesJSONSerializer _ddmFormFieldTypesJSONSerializer;
+	private DDMFormLayoutJSONSerializer _ddmFormLayoutJSONSerializer;
 
 }

@@ -49,6 +49,10 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceURL;
 
+import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+
 /**
  * @author Marcellus Tavares
  */
@@ -58,6 +62,7 @@ public class DDLFormDisplayContext {
 			RenderRequest renderRequest, RenderResponse renderResponse,
 			DDLRecordSetService ddlRecordSetService,
 			DDMFormRenderer ddmFormRenderer,
+			Servlet ddmFormRendererEvaluatorServlet,
 			DDMFormValuesFactory ddmFormValuesFactory,
 			WorkflowDefinitionLinkLocalService
 				workflowDefinitionLinkLocalService)
@@ -67,6 +72,7 @@ public class DDLFormDisplayContext {
 		_renderResponse = renderResponse;
 		_ddlRecordSetService = ddlRecordSetService;
 		_ddmFormRenderer = ddmFormRenderer;
+		_ddmFormRendererEvaluatorServlet = ddmFormRendererEvaluatorServlet;
 		_ddmFormValuesFactory = ddmFormValuesFactory;
 		_workflowDefinitionLinkLocalService =
 			workflowDefinitionLinkLocalService;
@@ -217,6 +223,8 @@ public class DDLFormDisplayContext {
 			LocaleUtil.fromLanguageId(languageId));
 		ddmFormRenderingContext.setPortletNamespace(
 			_renderResponse.getNamespace());
+		ddmFormRenderingContext.setEvaluatorURL(
+			getDDMFormEvaluatorServletURL());
 
 		return ddmFormRenderingContext;
 	}
@@ -250,6 +258,14 @@ public class DDLFormDisplayContext {
 		}
 
 		return ddmForm;
+	}
+
+	protected String getDDMFormEvaluatorServletURL() {
+		String servletContextPath = getServletContextPath(
+			_ddmFormRendererEvaluatorServlet);
+
+		return servletContextPath.concat(
+			"/dynamic-data-mapping-form-renderer-evaluator/");
 	}
 
 	protected DDMFormLayout getDDMFormLayout(
@@ -294,6 +310,14 @@ public class DDLFormDisplayContext {
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
 
 		return portletDisplay.getPortletResource();
+	}
+
+	protected String getServletContextPath(Servlet servlet) {
+		ServletConfig servletConfig = servlet.getServletConfig();
+
+		ServletContext servletContext = servletConfig.getServletContext();
+
+		return servletContext.getContextPath();
 	}
 
 	protected String getSubmitLabel(DDLRecordSet recordSet) {
@@ -395,6 +419,7 @@ public class DDLFormDisplayContext {
 
 	private final DDLRecordSetService _ddlRecordSetService;
 	private final DDMFormRenderer _ddmFormRenderer;
+	private final Servlet _ddmFormRendererEvaluatorServlet;
 	private final DDMFormValuesFactory _ddmFormValuesFactory;
 	private Boolean _hasViewPermission;
 	private DDLRecordSet _recordSet;
