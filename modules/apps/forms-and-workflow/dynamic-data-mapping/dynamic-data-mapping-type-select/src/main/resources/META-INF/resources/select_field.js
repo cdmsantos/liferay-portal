@@ -8,27 +8,12 @@ AUI.add(
 		var SelectField = A.Component.create(
 			{
 				ATTRS: {
-					dataSourceOptions: {
-						value: []
-					},
-
 					dataSourceType: {
 						value: 'manual'
 					},
 
-					dataProviderURL: {
-						valueFn: '_valueDataProviderURL'
-					},
-
-					ddmDataProviderInstanceId: {
-						value: 0
-					},
-
-					multiple: {
-						value: false
-					},
-
 					options: {
+						getter: '_getOptions',
 						validator: Array.isArray,
 						value: []
 					},
@@ -56,6 +41,35 @@ AUI.add(
 				NAME: 'liferay-ddm-form-field-select',
 
 				prototype: {
+					getTemplateContext: function() {
+						var instance = this;
+
+						return A.merge(
+							SelectField.superclass.getTemplateContext.apply(instance, arguments),
+							{
+								options: instance.get('options')
+							}
+						);
+					},
+
+					getValue: function() {
+						var instance = this;
+
+						var inputNode = instance.getInputNode();
+
+						var value = [];
+
+						inputNode.all('option').each(
+							function(optionNode) {
+								if (optionNode.attr('selected')) {
+									value.push(optionNode.val());
+								}
+							}
+						);
+
+						return value;
+					},
+
 					render: function() {
 						var instance = this;
 
@@ -63,34 +77,21 @@ AUI.add(
 
 						SelectField.superclass.render.apply(instance, arguments);
 
-						if (dataSourceType !== 'manual') {
-							if (instance.get('builder')) {
-								var inputNode = instance.getInputNode();
+						if (dataSourceType !== 'manual' && instance.get('builder')) {
+							var inputNode = instance.getInputNode();
 
-								var strings = instance.get('strings');
+							var strings = instance.get('strings');
 
-								inputNode.attr('disabled', true);
+							inputNode.attr('disabled', true);
 
-								inputNode.html(
-									Lang.sub(
-										TPL_OPTION,
-										{
-											label: strings.dynamicallyLoadedData
-										}
-									)
-								);
-							}
-							else {
-								var container = instance.get('container');
-
-								instance._getDataSourceData(
-									function(options) {
-										instance.set('dataSourceOptions', options);
-
-										container.html(instance.getTemplate());
+							inputNode.html(
+								Lang.sub(
+									TPL_OPTION,
+									{
+										label: strings.dynamicallyLoadedData
 									}
-								);
-							}
+								)
+							);
 						}
 
 						return instance;
@@ -99,17 +100,15 @@ AUI.add(
 					setValue: function(value) {
 						var instance = this;
 
-						var inputNode = instance.getInputNode();
+						if (Lang.isArray(value)) {
+							var inputNode = instance.getInputNode();
 
-						var options = inputNode.all('option');
-
-						options.attr('selected', false);
-
-						options.filter(
-							function(option) {
-								return value.indexOf(option.val()) > -1;
-							}
-						).attr('selected', true);
+							inputNode.all('option').each(
+								function(optionNode) {
+									optionNode.attr('selected', value.indexOf(optionNode.val()) > -1);
+								}
+							);
+						}
 					},
 
 					showErrorMessage: function() {
@@ -124,43 +123,10 @@ AUI.add(
 						inputGroup.insert(container.one('.help-block'), 'after');
 					},
 
-					_getDataSourceData: function(callback) {
+					_getOptions: function(options) {
 						var instance = this;
 
-						A.io.request(
-							instance.get('dataProviderURL'),
-							{
-								data: {
-									ddmDataProviderInstanceId: instance.get('ddmDataProviderInstanceId')
-								},
-								dataType: 'JSON',
-								method: 'GET',
-								on: {
-									failure: function() {
-										callback.call(instance, null);
-									},
-									success: function() {
-										var result = this.get('responseData');
-
-										callback.call(instance, result);
-									}
-								}
-							}
-						);
-					},
-
-					_valueDataProviderURL: function() {
-						var instance = this;
-
-						var dataProviderURL;
-
-						var form = instance.getRoot();
-
-						if (form) {
-							dataProviderURL = form.get('dataProviderURL');
-						}
-
-						return dataProviderURL;
+						return options || [];
 					}
 				}
 			}

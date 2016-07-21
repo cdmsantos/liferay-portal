@@ -61,7 +61,7 @@ AUI.add(
 								if (name === 'name') {
 									config[name] = field.get('fieldName');
 								}
-								else if (name === 'options') {
+								else if (name === 'options' && config[name]) {
 									config[name] = value.slice().map(
 										function(option) {
 											var label = {};
@@ -88,8 +88,6 @@ AUI.add(
 							}
 						);
 
-						instance._serializeFieldRules(field, config);
-
 						instance.get('fields').push(
 							A.merge(
 								config,
@@ -100,33 +98,6 @@ AUI.add(
 								}
 							)
 						);
-					},
-
-					_serializeFieldRules: function(field, config) {
-						var instance = this;
-
-						var validation = config.validation;
-
-						var validationExpression = validation.expression;
-						var validationErrorMessage = validation.errorMessage;
-
-						delete config.validation;
-
-						var visibilityExpression = config.visibilityExpression;
-
-						delete config.visibilityExpression;
-
-						config.rules = [
-							{
-								errorMessage: validationErrorMessage,
-								expression: validationExpression,
-								type: 'VALIDATION'
-							},
-							{
-								expression: visibilityExpression,
-								type: 'VISIBILITY'
-							}
-						];
 					},
 
 					_valueFieldHandler: function() {

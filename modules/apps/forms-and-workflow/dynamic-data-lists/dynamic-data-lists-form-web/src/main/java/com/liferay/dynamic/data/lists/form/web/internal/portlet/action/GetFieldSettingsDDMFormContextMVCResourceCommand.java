@@ -20,25 +20,32 @@ import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServices
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormTemplateContextFactory;
 import com.liferay.dynamic.data.mapping.io.DDMFormJSONDeserializer;
+import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.model.Value;
+import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.util.DDMFormFactory;
 import com.liferay.dynamic.data.mapping.util.DDMFormLayoutFactory;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONSerializer;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -61,6 +68,43 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class GetFieldSettingsDDMFormContextMVCResourceCommand
 	extends BaseMVCResourceCommand {
+
+	protected void addDataProviderDDMFormFieldOptionLabels(
+			DDMFormFieldOptions ddmFormFieldOptions, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		Locale locale = themeDisplay.getLocale();
+
+		List<DDMDataProviderInstance> ddmDataProviderInstances =
+			_ddmDataProviderInstanceLocalService.getDataProviderInstances(
+				PortalUtil.getCurrentAndAncestorSiteGroupIds(
+					themeDisplay.getScopeGroupId()));
+
+		for (DDMDataProviderInstance ddmDataProviderInstance :
+				ddmDataProviderInstances) {
+
+			long value = ddmDataProviderInstance.getDataProviderInstanceId();
+
+			String label = ddmDataProviderInstance.getName(locale);
+
+			ddmFormFieldOptions.addOptionLabel(
+				String.valueOf(value), locale, label);
+		}
+	}
+
+	protected DDMFormFieldOptions createDataProviderDDMFormFieldOptions(
+			ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		DDMFormFieldOptions ddmFormFieldOptions = new DDMFormFieldOptions();
+
+		ddmFormFieldOptions.setDefaultLocale(themeDisplay.getLocale());
+
+		addDataProviderDDMFormFieldOptionLabels(
+			ddmFormFieldOptions, themeDisplay);
+
+		return ddmFormFieldOptions;
+	}
 
 	protected DDMFormFieldValue createDDMFormFieldTypeSettingsDDMFormFieldValue(
 		Object property, DDMFormField ddmFormFieldTypeSetting, Locale locale) {
@@ -110,12 +154,29 @@ public class GetFieldSettingsDDMFormContextMVCResourceCommand
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
+		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
 		String type = ParamUtil.getString(resourceRequest, "type");
 
 		Class<?> ddmFormFieldTypeSettings = getDDMFormFieldTypeSettings(type);
 
 		DDMForm ddmFormFieldTypeSettingsDDMForm = DDMFormFactory.create(
 			ddmFormFieldTypeSettings);
+
+		Map<String, DDMFormField>ddmFormFieldTypeSettingsDDMFormFieldsMap =
+			ddmFormFieldTypeSettingsDDMForm.getDDMFormFieldsMap(false);
+
+		DDMFormField ddmFormField =
+			ddmFormFieldTypeSettingsDDMFormFieldsMap.get(
+				"ddmDataProviderInstanceId");
+
+		if (ddmFormField != null) {
+			DDMFormFieldOptions ddmFormFieldOptions =
+				createDataProviderDDMFormFieldOptions(themeDisplay);
+
+			ddmFormField.setDDMFormFieldOptions(ddmFormFieldOptions);
+		}
 
 		DDMFormLayout ddmFormFieldTypeSettingsDDMFormLayout =
 			DDMFormLayoutFactory.create(ddmFormFieldTypeSettings);
@@ -128,7 +189,7 @@ public class GetFieldSettingsDDMFormContextMVCResourceCommand
 		ddmFormRenderingContext.setHttpServletResponse(
 			PortalUtil.getHttpServletResponse(resourceResponse));
 		ddmFormRenderingContext.setContainerId("settings");
-		ddmFormRenderingContext.setLocale(resourceRequest.getLocale());
+		ddmFormRenderingContext.setLocale(themeDisplay.getLocale());
 		ddmFormRenderingContext.setPortletNamespace(
 			resourceResponse.getNamespace());
 
@@ -153,6 +214,10 @@ public class GetFieldSettingsDDMFormContextMVCResourceCommand
 
 		return ddmFormFieldType.getDDMFormFieldTypeSettings();
 	}
+
+	@Reference
+	private DDMDataProviderInstanceLocalService
+		_ddmDataProviderInstanceLocalService;
 
 	@Reference
 	private DDMFormFieldTypeServicesTracker _ddmFormFieldTypeServicesTracker;

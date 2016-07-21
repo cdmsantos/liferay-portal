@@ -32,7 +32,7 @@ import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import java.io.IOException;
-
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.Servlet;
@@ -59,7 +59,8 @@ import org.osgi.service.component.annotations.Reference;
 public class DDMFormRendererEvaluatorServlet extends HttpServlet {
 
 	protected DDMFormRenderingContext createDDMFormRenderingContext(
-		HttpServletRequest request, HttpServletResponse response) {
+		HttpServletRequest request, HttpServletResponse response,
+		Locale locale) {
 
 		String portletNamespace = ParamUtil.getString(
 			request, "portletNamespace");
@@ -69,7 +70,7 @@ public class DDMFormRendererEvaluatorServlet extends HttpServlet {
 
 		ddmFormRenderingContext.setHttpServletRequest(request);
 		ddmFormRenderingContext.setHttpServletResponse(response);
-		ddmFormRenderingContext.setLocale(request.getLocale());
+		ddmFormRenderingContext.setLocale(locale);
 		ddmFormRenderingContext.setPortletNamespace(portletNamespace);
 
 		return ddmFormRenderingContext;
@@ -93,8 +94,10 @@ public class DDMFormRendererEvaluatorServlet extends HttpServlet {
 				_ddmFormValuesJSONDeserializer.deserialize(
 					ddmForm, serializedDDMFormValues);
 
+			Locale defaultLocale = ddmForm.getDefaultLocale();
+
 			DDMFormRenderingContext ddmFormRenderingContext =
-				createDDMFormRenderingContext(request, response);
+				createDDMFormRenderingContext(request, response, defaultLocale);
 
 			ddmFormRenderingContext.setDDMFormValues(ddmFormValues);
 
@@ -102,7 +105,7 @@ public class DDMFormRendererEvaluatorServlet extends HttpServlet {
 				_ddmFormLayoutJSONDeserializer.deserialize(
 					serializedDDMFormLayout);
 
-			LocaleThreadLocal.setThemeDisplayLocale(ddmForm.getDefaultLocale());
+			LocaleThreadLocal.setThemeDisplayLocale(defaultLocale);
 
 			Map<String, Object> templateContext =
 				_ddmFormTemplateContextFactory.create(

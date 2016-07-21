@@ -1,6 +1,10 @@
 AUI.add(
 	'liferay-ddm-form-field-editor',
 	function(A) {
+		var Renderer = Liferay.DDM.Renderer;
+
+		var Util = Renderer.Util;
+
 		var EditorField = A.Component.create(
 			{
 				ATTRS: {
@@ -106,29 +110,27 @@ AUI.add(
 
 						EditorField.superclass.setValue.apply(instance, arguments);
 
-						if (instance._alloyEditor) {
+						if (instance._alloyEditor && value !== instance.getValue()) {
 							instance._alloyEditor.setHTML(value);
 						}
 					},
 
-					_onChangeEditor: function() {
+					_onChangeEditor: function(value) {
 						var instance = this;
 
 						var inputNode = instance.getInputNode();
 
-						var value = instance._alloyEditor.getHTML();
-
-						if (inputNode) {
+						if (inputNode && Util.compare(value, inputNode.val())) {
 							inputNode.val(value);
-						}
 
-						instance.fire(
-							'valueChanged',
-							{
-								field: instance,
-								value: value
-							}
-						);
+							instance.fire(
+								'valueChanged',
+								{
+									field: instance,
+									value: value
+								}
+							);
+						}
 					}
 				}
 			}

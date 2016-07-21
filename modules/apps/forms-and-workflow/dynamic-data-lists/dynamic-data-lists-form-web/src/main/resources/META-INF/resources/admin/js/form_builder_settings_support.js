@@ -32,9 +32,6 @@ AUI.add(
 				}
 			},
 
-			dataProviders: {
-			},
-
 			getFieldTypeSettingFormContextURL: {
 				value: ''
 			},
@@ -154,7 +151,6 @@ AUI.add(
 				return new Liferay.DDL.FormBuilderSettingsForm(
 					{
 						context: context,
-						dataProviders: instance.get('dataProviders'),
 						definition: context.definition,
 						editMode: builder.get('recordSetId') === 0 || instance.isPersisted(),
 						evaluatorURL: instance.get('evaluatorURL'),
