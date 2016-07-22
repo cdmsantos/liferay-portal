@@ -67,7 +67,13 @@ AUI.add(
 							}
 						);
 
-						return value;
+						if (value.length == 1) {
+							return value[0];
+						}
+						else {
+							return value;
+						}
+
 					},
 
 					render: function() {
