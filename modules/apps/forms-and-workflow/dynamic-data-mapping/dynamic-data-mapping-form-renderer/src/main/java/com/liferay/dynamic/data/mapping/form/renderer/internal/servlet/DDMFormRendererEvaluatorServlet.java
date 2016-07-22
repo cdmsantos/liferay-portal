@@ -14,8 +14,10 @@
 
 package com.liferay.dynamic.data.mapping.form.renderer.internal.servlet;
 
+import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluator;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
-import com.liferay.dynamic.data.mapping.form.renderer.DDMFormTemplateContextFactory;
+import com.liferay.dynamic.data.mapping.form.renderer.internal.DDMFormPagesTemplateContextFactory;
 import com.liferay.dynamic.data.mapping.io.DDMFormJSONDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormLayoutJSONDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
@@ -32,8 +34,9 @@ import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import java.io.IOException;
+
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -107,11 +110,7 @@ public class DDMFormRendererEvaluatorServlet extends HttpServlet {
 
 			LocaleThreadLocal.setThemeDisplayLocale(defaultLocale);
 
-			Map<String, Object> templateContext =
-				_ddmFormTemplateContextFactory.create(
-					ddmForm, ddmFormLayout, ddmFormRenderingContext);
-
-			return templateContext.get("pages");
+			return getPages(ddmForm, ddmFormLayout, ddmFormRenderingContext);
 		}
 		catch (Exception e) {
 			if (_log.isDebugEnabled()) {
@@ -144,19 +143,38 @@ public class DDMFormRendererEvaluatorServlet extends HttpServlet {
 			response, jsonSerializer.serializeDeep(pages));
 	}
 
+	protected List<Object> getPages(
+		DDMForm ddmForm, DDMFormLayout ddmFormLayout,
+		DDMFormRenderingContext ddmFormRenderingContext) {
+
+		DDMFormPagesTemplateContextFactory ddmFormPagesTemplateContextFactory =
+			new DDMFormPagesTemplateContextFactory(
+				ddmForm, ddmFormLayout, ddmFormRenderingContext);
+
+		ddmFormPagesTemplateContextFactory.setDDMFormEvaluator(
+			_ddmFormEvaluator);
+		ddmFormPagesTemplateContextFactory.setDDMFormFieldTypeServicesTracker(
+			_ddmFormFieldTypeServicesTracker);
+
+		return ddmFormPagesTemplateContextFactory.create();
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMFormRendererEvaluatorServlet.class);
 
 	private static final long serialVersionUID = 1L;
 
 	@Reference
+	private DDMFormEvaluator _ddmFormEvaluator;
+
+	@Reference
+	private DDMFormFieldTypeServicesTracker _ddmFormFieldTypeServicesTracker;
+
+	@Reference
 	private DDMFormJSONDeserializer _ddmFormJSONDeserializer;
 
 	@Reference
 	private DDMFormLayoutJSONDeserializer _ddmFormLayoutJSONDeserializer;
-
-	@Reference
-	private DDMFormTemplateContextFactory _ddmFormTemplateContextFactory;
 
 	@Reference
 	private DDMFormValuesJSONDeserializer _ddmFormValuesJSONDeserializer;

@@ -309,14 +309,14 @@ public class DDMFormFieldTemplateContextFactory {
 	protected void setDDMFormFieldTemplateContextOptions(
 		Map<String, Object> ddmFormFieldTemplateContext,
 		DDMFormFieldOptions ddmFormFieldOptions) {
-		
+
 		Map<String, LocalizedValue> options = ddmFormFieldOptions.getOptions();
 
 		List<Map<String, String>> list = new ArrayList<>();
 
 		for (Entry<String, LocalizedValue> entry : options.entrySet()) {
 			Map<String, String> option = new HashMap<>();
-			
+
 			LocalizedValue localizedValue = entry.getValue();
 
 			option.put("label", localizedValue.getString(_locale));

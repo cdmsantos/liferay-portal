@@ -32,7 +32,6 @@
  * @param layout
  * @param portletNamespace
  * @param readOnly
- * @param recordSetId
  */
 {template .form_renderer_js autoescape="deprecated-contextual"}
 	<script type="text/javascript">
@@ -52,8 +51,7 @@
 							evaluatorURL: '{$evaluatorURL}',
 							layout: {$layout|noAutoescape},
 							portletNamespace: '{$portletNamespace}',
-							readOnly: {$readOnly},
-							recordSetId: {$recordSetId}
+							readOnly: {$readOnly}
 						{rb}
 					).render()
 				);
