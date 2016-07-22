@@ -14,12 +14,6 @@
 
 package com.liferay.dynamic.data.mapping.type.key.value.internal;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import org.osgi.service.component.annotations.Component;
-
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTemplateContextContributor;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
@@ -27,6 +21,12 @@ import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.StringPool;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Marcellus Tavares

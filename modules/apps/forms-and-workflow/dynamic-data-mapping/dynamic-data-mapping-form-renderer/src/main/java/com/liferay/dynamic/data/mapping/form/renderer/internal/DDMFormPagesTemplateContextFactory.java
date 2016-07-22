@@ -167,8 +167,7 @@ public class DDMFormPagesTemplateContextFactory {
 
 		DDMFormFieldTemplateContextFactory ddmFormFieldTemplateContextFactory =
 			new DDMFormFieldTemplateContextFactory(
-				_ddmFormFieldsMap,
-				_ddmFormFieldEvaluationResultMap.get(ddmFormFieldName),
+				_ddmFormFieldsMap, _ddmFormFieldEvaluationResultMap,
 				_ddmFormFieldValuesMap.get(ddmFormFieldName),
 				_ddmFormRenderingContext);
 

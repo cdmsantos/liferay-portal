@@ -371,14 +371,14 @@ public class DDMFormJSONDeserializerImpl implements DDMFormJSONDeserializer {
 		throws PortalException {
 
 		String settingName = ddmFormFieldTypeSetting.getName();
-		
+
 		if (jsonObject.has(settingName)) {
 			Object deserializedDDMFormFieldProperty =
 				deserializeDDMFormFieldProperty(
 					jsonObject.getString(settingName), ddmFormFieldTypeSetting);
-			
+
 			ddmFormField.setProperty(
-				settingName, deserializedDDMFormFieldProperty);			
+				settingName, deserializedDDMFormFieldProperty);
 		}
 	}
 

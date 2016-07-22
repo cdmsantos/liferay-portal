@@ -48,12 +48,12 @@ public class OptionsDDMFormFieldContextHelper {
 
 		try {
 			JSONArray jsonArray = _jsonFactory.createJSONArray(_value);
-			
+
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				
+
 				Map<String, String> optionMap = new HashMap<>();
-				
+
 				optionMap.put("label", jsonObject.getString("label"));
 				optionMap.put("value", jsonObject.getString("value"));
 

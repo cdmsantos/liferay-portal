@@ -62,21 +62,6 @@ public class RadioDDMFormFieldContextHelper {
 
 		return options;
 	}
-	
-	protected String[] toStringArray(String value) {
-		if (Validator.isNull(value)) {
-			return GetterUtil.DEFAULT_STRING_VALUES;
-		}
-
-		try {
-			JSONArray jsonArray = _jsonFactory.createJSONArray(value);
-
-			return ArrayUtil.toStringArray(jsonArray);
-		}
-		catch (JSONException jsone) {
-			return StringUtil.split(value);
-		}
-	}
 
 	protected String toString(String value) {
 		if (Validator.isNull(value)) {
@@ -96,6 +81,21 @@ public class RadioDDMFormFieldContextHelper {
 			}
 
 			return StringPool.BLANK;
+		}
+	}
+
+	protected String[] toStringArray(String value) {
+		if (Validator.isNull(value)) {
+			return GetterUtil.DEFAULT_STRING_VALUES;
+		}
+
+		try {
+			JSONArray jsonArray = _jsonFactory.createJSONArray(value);
+
+			return ArrayUtil.toStringArray(jsonArray);
+		}
+		catch (JSONException jsone) {
+			return StringUtil.split(value);
 		}
 	}
 

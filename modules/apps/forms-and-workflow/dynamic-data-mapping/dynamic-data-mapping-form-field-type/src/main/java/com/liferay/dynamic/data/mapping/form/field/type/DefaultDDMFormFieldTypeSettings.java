@@ -115,8 +115,7 @@ public interface DefaultDDMFormFieldTypeSettings
 	public boolean required();
 
 	@DDMFormField(
-		label = "%show-label",
-		predefinedValue = "true",
+		label = "%show-label", predefinedValue = "true",
 		properties = {"showAsSwitcher=true"}
 	)
 	public boolean showLabel();

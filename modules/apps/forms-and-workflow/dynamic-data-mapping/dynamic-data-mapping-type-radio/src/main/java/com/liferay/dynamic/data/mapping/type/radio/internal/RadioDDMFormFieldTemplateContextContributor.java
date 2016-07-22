@@ -60,6 +60,35 @@ public class RadioDDMFormFieldTemplateContextContributor
 		return parameters;
 	}
 
+	protected DDMFormFieldOptions getDDMFormFieldOptions(
+		DDMFormField ddmFormField,
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
+
+		DDMFormFieldOptions ddmFormFieldOptions = new DDMFormFieldOptions();
+
+		String dataSourceType = GetterUtil.getString(
+			ddmFormField.getProperty("dataSourceType"), "manual");
+
+		if (Objects.equals(dataSourceType, "manual")) {
+			List<Map<String, String>> keyValuePairs =
+				(List<Map<String, String>>)
+					ddmFormFieldRenderingContext.getProperty("options");
+
+			if (keyValuePairs.size() == 0) {
+				return ddmFormField.getDDMFormFieldOptions();
+			}
+
+			for (Map<String, String> keyValuePair : keyValuePairs) {
+				ddmFormFieldOptions.addOptionLabel(
+					keyValuePair.get("value"),
+					ddmFormFieldRenderingContext.getLocale(),
+					keyValuePair.get("label"));
+			}
+		}
+
+		return ddmFormFieldOptions;
+	}
+
 	protected List<Object> getOptions(
 		DDMFormField ddmFormField,
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
@@ -93,36 +122,6 @@ public class RadioDDMFormFieldTemplateContextContributor
 				ddmFormFieldRenderingContext.getValue());
 
 		return ListUtil.toList(valuesStringArray);
-	}
-	
-	protected DDMFormFieldOptions getDDMFormFieldOptions(
-		DDMFormField ddmFormField,
-		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
-
-		DDMFormFieldOptions ddmFormFieldOptions = new DDMFormFieldOptions();
-
-		String dataSourceType = GetterUtil.getString(
-			ddmFormField.getProperty("dataSourceType"), "manual");
-
-		if (Objects.equals(dataSourceType, "manual")) {
-			List<Map<String, String>> keyValuePairs =
-				(List<Map<String, String>>)
-					ddmFormFieldRenderingContext.getProperty("options");
-
-			if (keyValuePairs.size() == 0) {
-				return ddmFormField.getDDMFormFieldOptions();
-			}
-
-			for (Map<String, String> keyValuePair : keyValuePairs) {
-				ddmFormFieldOptions.addOptionLabel(
-					keyValuePair.get("value"),
-					ddmFormFieldRenderingContext.getLocale(),
-					keyValuePair.get("label"));
-			}
-
-		}
-
-		return ddmFormFieldOptions;
 	}
 
 	@Reference
