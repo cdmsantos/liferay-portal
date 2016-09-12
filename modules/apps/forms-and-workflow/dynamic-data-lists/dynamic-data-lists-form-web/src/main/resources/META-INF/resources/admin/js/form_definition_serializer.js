@@ -5,6 +5,7 @@ AUI.add(
 			{
 				ATTRS: {
 					availableLanguageIds: {
+						value: [themeDisplay.getDefaultLanguageId()]
 					},
 
 					defaultLanguageId: {
@@ -56,7 +57,7 @@ AUI.add(
 
 						var definitionFields = fieldTypesDefinitions[field.get('type')];
 
-						var languageId = themeDisplay.getLanguageId();
+						var languageId = themeDisplay.getDefaultLanguageId();
 
 						definitionFields.forEach(
 							function(fieldSetting) {
