@@ -1,0 +1,59 @@
+{namespace ddm}
+
+/**
+ * Defines the delegated template for the ratings field.
+ */
+{deltemplate ddm.field autoescape="deprecated-contextual" variant="'ratings'"}
+	{call .ratings data="all" /}
+{/deltemplate}
+
+/**
+ * Prints the DDM form ratings field.
+ *
+ * @param? childElementsHTML
+ * @param label
+ * @param name
+ * @param predefinedValue
+ * @param range
+ * @param readOnly
+ * @param required
+ * @param showLabel
+ * @param tip
+ * @param value
+ * @param visible
+ */
+{template .ratings autoescape="deprecated-contextual"}
+	{let $displayValue: $value ? $value : $predefinedValue /}
+
+	<div class="form-group{$visible ? '' : ' hide'}" data-fieldname="{$name}">
+		{if $showLabel}
+			<label class="control-label">
+				{$label}
+
+				{if $required}
+					<span class="icon-asterisk text-warning"></span>
+				{/if}
+			</label>
+
+			{if $tip}
+				<p class="liferay-ddm-form-field-tip">{$tip}</p>
+			{/if}
+		{/if}
+
+		<div class="clearfix ratings">
+
+			<div class="ratings-options" {if $readOnly}disabled{/if}>
+				{for $curValue in range($range)}
+					{let $checked: $curValue == $displayValue ? 'checked' : '' /}
+				
+					<input {$checked} id="{$name}_{$curValue}" name="{$name}" type="radio" value="{$curValue}" />
+				{/for}
+			</div>
+
+		</div>
+
+		{if $childElementsHTML}
+			{$childElementsHTML|noAutoescape}
+		{/if}
+	</div>
+{/template}
