@@ -40,10 +40,14 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.util.Encryptor;
+
+import java.security.Key;
 
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +58,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -218,6 +223,8 @@ public class SelectDDMFormFieldTemplateContextContributor
 			String ddmDataProviderInstanceOutput = GetterUtil.getString(
 				ddmFormField.getProperty("ddmDataProviderInstanceOutput"));
 
+			Key key = getKey(ddmFormFieldRenderingContext);
+
 			if (Validator.isNotNull(ddmDataProviderInstanceOutput)) {
 				DDMDataProviderOutputParametersSettings outputParameterSetting =
 					getDDMDataProviderOutputParametersSetting(
@@ -228,21 +235,29 @@ public class SelectDDMFormFieldTemplateContextContributor
 					outputParameterSetting.outputParameterPath(),
 					CharPool.SEMICOLON);
 
-				String key = paths[0];
+				String optionLabelPath = paths[0];
 
-				String value = key;
+				String optionValuePath = optionLabelPath;
 
 				if (paths.length > 1) {
-					value = paths[1];
+					optionValuePath = paths[1];
 				}
 
 				for (Map<Object, Object> ddmDataProviderData :
 						ddmDataProviderResponse.getData()) {
 
+					String optionValue = String.valueOf(
+						ddmDataProviderData.get(optionValuePath));
+
+					if (key != null) {
+						optionValue = encryptOptionValue(
+							ddmDataProviderInstanceId, optionValue, key);
+					}
+
 					ddmFormFieldOptions.addOptionLabel(
-						String.valueOf(ddmDataProviderData.get(value)),
-						ddmFormFieldRenderingContext.getLocale(),
-						String.valueOf(ddmDataProviderData.get(key)));
+						optionValue, ddmFormFieldRenderingContext.getLocale(),
+						String.valueOf(
+							ddmDataProviderData.get(optionLabelPath)));
 				}
 			}
 			else {
@@ -252,8 +267,15 @@ public class SelectDDMFormFieldTemplateContextContributor
 					for (Entry<Object, Object> entry :
 							ddmDataProviderData.entrySet()) {
 
+						String optionValue = String.valueOf(entry.getValue());
+
+						if (key != null) {
+							optionValue = encryptOptionValue(
+								ddmDataProviderInstanceId, optionValue, key);
+						}
+
 						ddmFormFieldOptions.addOptionLabel(
-							String.valueOf(entry.getValue()),
+							optionValue,
 							ddmFormFieldRenderingContext.getLocale(),
 							String.valueOf(entry.getKey()));
 					}
@@ -267,6 +289,26 @@ public class SelectDDMFormFieldTemplateContextContributor
 		}
 
 		return ddmFormFieldOptions;
+	}
+
+	protected String encryptOptionValue(
+		String ddmDataProviderInstanceId, String optionKey, Key key) {
+
+		String text = String.format(
+			"%s#%s", optionKey, ddmDataProviderInstanceId);
+
+		try {
+			String encryptedText = Encryptor.encrypt(key, text);
+
+			return String.format("%s#%s", optionKey, encryptedText);
+		}
+		catch (Exception e) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(e, e);
+			}
+
+			return optionKey;
+		}
 	}
 
 	protected DDMDataProviderResponse executeDDMDataProvider(
@@ -320,6 +362,39 @@ public class SelectDDMFormFieldTemplateContextContributor
 			return createDDMFormFieldOptions(
 				ddmFormField, ddmFormFieldRenderingContext);
 		}
+	}
+
+	protected Key getKey(
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
+
+		HttpServletRequest request = PortalUtil.getOriginalServletRequest(
+			ddmFormFieldRenderingContext.getHttpServletRequest());
+
+		HttpSession session = request.getSession();
+
+		Key key = null;
+
+		try {
+			String serializedKey = (String)session.getAttribute("key");
+
+			if (serializedKey == null) {
+				key = Encryptor.generateKey();
+
+				serializedKey = Encryptor.serializeKey(key);
+
+				session.setAttribute("key", serializedKey);
+			}
+			else {
+				key = Encryptor.deserializeKey(serializedKey);
+			}
+		}
+		catch (Exception e) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(e, e);
+			}
+		}
+
+		return key;
 	}
 
 	protected List<Object> getOptions(
