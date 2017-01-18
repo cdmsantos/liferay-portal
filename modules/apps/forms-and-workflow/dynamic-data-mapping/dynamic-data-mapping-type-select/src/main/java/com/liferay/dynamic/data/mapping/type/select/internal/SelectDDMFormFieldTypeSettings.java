@@ -106,7 +106,9 @@ public interface SelectDDMFormFieldTypeSettings
 
 	@DDMFormField(
 		label = "%choose-an-output-parameter",
-		tip = "%choose-an-output-parameter-for-a-data-provider-previously-created",
+		properties = {
+			"tooltip=%choose-an-output-parameter-for-a-data-provider-previously-created"
+		},
 		type = "select"
 	)
 	public String ddmDataProviderOutput();
