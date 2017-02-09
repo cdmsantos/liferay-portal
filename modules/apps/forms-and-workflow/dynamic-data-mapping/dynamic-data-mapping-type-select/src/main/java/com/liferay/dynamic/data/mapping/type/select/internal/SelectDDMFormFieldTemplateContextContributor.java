@@ -197,6 +197,7 @@ public class SelectDDMFormFieldTemplateContextContributor
 					ddmDataProviderInstanceId);
 
 			DDMDataProviderContext ddmDataProviderContext = null;
+			Key key = null;
 
 			if (ddmDataProvider != null) {
 				ddmDataProviderContext = new DDMDataProviderContext(null);
@@ -212,6 +213,8 @@ public class SelectDDMFormFieldTemplateContextContributor
 				ddmDataProviderContext = createDDMDataProviderContext(
 					ddmDataProviderInstanceId, ddmDataProvider, ddmFormField,
 					ddmFormFieldRenderingContext);
+
+				key = getKey(ddmFormFieldRenderingContext);
 			}
 
 			ddmDataProviderContext.setHttpServletRequest(
@@ -222,8 +225,6 @@ public class SelectDDMFormFieldTemplateContextContributor
 
 			String ddmDataProviderInstanceOutput = GetterUtil.getString(
 				ddmFormField.getProperty("ddmDataProviderInstanceOutput"));
-
-			Key key = getKey(ddmFormFieldRenderingContext);
 
 			if (Validator.isNotNull(ddmDataProviderInstanceOutput)) {
 				DDMDataProviderOutputParametersSettings outputParameterSetting =

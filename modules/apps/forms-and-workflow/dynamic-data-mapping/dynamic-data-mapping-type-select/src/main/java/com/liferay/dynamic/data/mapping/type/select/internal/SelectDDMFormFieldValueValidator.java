@@ -14,6 +14,7 @@
 
 package com.liferay.dynamic.data.mapping.type.select.internal;
 
+import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderTracker;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueValidationException;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueValidator;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
@@ -36,6 +37,7 @@ import java.security.Key;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -80,16 +82,11 @@ public class SelectDDMFormFieldValueValidator
 			return jsonFactory.createJSONArray(json);
 		}
 		catch (JSONException jsone) {
+			JSONArray jsonArray = jsonFactory.createJSONArray();
 
-			// LPS-52675
+			jsonArray.put(json);
 
-			if (_log.isDebugEnabled()) {
-				_log.debug(jsone, jsone);
-			}
-
-			throw new DDMFormFieldValueValidationException(
-				String.format(
-					"Invalid data stored for select field \"%s\"", fieldName));
+			return jsonArray;
 		}
 	}
 
@@ -131,6 +128,11 @@ public class SelectDDMFormFieldValueValidator
 		String ddmDataProviderInstanceId = GetterUtil.getString(
 			ddmFormField.getProperty("ddmDataProviderInstanceId"));
 
+		if (ddmDataProviderTracker.getDDMDataProviderByInstanceId(
+				ddmDataProviderInstanceId) != null) {
+			return;
+		}
+
 		HttpSession session = PortalSessionThreadLocal.getHttpSession();
 
 		Key key = getKey(session);
@@ -141,11 +143,15 @@ public class SelectDDMFormFieldValueValidator
 
 		Map<Locale, String> selectedValues = value.getValues();
 
-		for (String selectedValue : selectedValues.values()) {
+		for (Entry<Locale, String> entry : selectedValues.entrySet()) {
 			JSONArray jsonArray = createJSONArray(
-				ddmFormField.getName(), selectedValue);
+				ddmFormField.getName(), entry.getValue());
 
 			for (int i = 0; i < jsonArray.length(); i++) {
+				if (Validator.isNull(jsonArray.getString(i))) {
+					continue;
+				}
+
 				Matcher matcher = _VALUE_PATTERN.matcher(
 					jsonArray.getString(i));
 
@@ -226,6 +232,9 @@ public class SelectDDMFormFieldValueValidator
 			}
 		}
 	}
+
+	@Reference
+	protected DDMDataProviderTracker ddmDataProviderTracker;
 
 	@Reference
 	protected JSONFactory jsonFactory;

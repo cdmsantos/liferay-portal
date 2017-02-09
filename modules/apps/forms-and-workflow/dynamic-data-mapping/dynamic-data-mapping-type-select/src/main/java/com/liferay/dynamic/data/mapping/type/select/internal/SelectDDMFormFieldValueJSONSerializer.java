@@ -113,7 +113,7 @@ public class SelectDDMFormFieldValueJSONSerializer
 				_log.debug(e, e);
 			}
 
-			return null;
+			return valueStr;
 		}
 	}
 
