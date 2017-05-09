@@ -18,6 +18,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.template.TemplateException;
 import com.liferay.portal.kernel.template.TemplateResource;
+import com.liferay.portal.template.soy.internal.SoyCapabilityBundleTracker;
+import com.liferay.portal.template.soy.internal.SoyTemplateResourceLoader;
 import com.liferay.portal.template.soy.internal.SoyTemplateResourcesCollector;
 import com.liferay.portal.template.soy.internal.SoyTemplateResourcesTracker;
 
@@ -44,7 +46,8 @@ public class SoyTemplateResourcesProvider {
 
 		try {
 			SoyTemplateResourcesCollector soyTemplateResourcesCollector =
-				new SoyTemplateResourcesCollector(bundle, templatePath);
+				new SoyTemplateResourcesCollector(
+					bundle, _soyTemplateResourceLoader, templatePath);
 
 			return soyTemplateResourcesCollector.getTemplateResources();
 		}
@@ -63,8 +66,22 @@ public class SoyTemplateResourcesProvider {
 	public static Bundle getTemplateResourceBundle(
 		TemplateResource templateResource) {
 
-		return _soyTemplateResourcesTracker.getTemplateBundle(
+		return _soyCapabilityBundleTracker.getTemplateBundle(
 			templateResource.getTemplateId());
+	}
+
+	@Reference(unbind = "-")
+	protected void setSoyCapabilityBundleTracker(
+		SoyCapabilityBundleTracker soyCapabilityBundleTracker) {
+
+		_soyCapabilityBundleTracker = soyCapabilityBundleTracker;
+	}
+
+	@Reference(unbind = "-")
+	protected void setSoyTemplateResourceLoader(
+		SoyTemplateResourceLoader soyTemplateResourceLoader) {
+
+		_soyTemplateResourceLoader = soyTemplateResourceLoader;
 	}
 
 	@Reference(unbind = "-")
@@ -77,6 +94,8 @@ public class SoyTemplateResourcesProvider {
 	private static final Log _log = LogFactoryUtil.getLog(
 		SoyTemplateResourcesProvider.class);
 
+	private static SoyCapabilityBundleTracker _soyCapabilityBundleTracker;
+	private static SoyTemplateResourceLoader _soyTemplateResourceLoader;
 	private static SoyTemplateResourcesTracker _soyTemplateResourcesTracker;
 
 }
