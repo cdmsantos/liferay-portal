@@ -14,8 +14,6 @@
 
 package com.liferay.portal.template.soy.internal;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.template.soy.utils.SoyTemplateUtil;
 
@@ -79,9 +77,6 @@ public class SoyCapabilityBundleTracker {
 	protected void deactivate() {
 		_bundleTracker.close();
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		SoyCapabilityBundleTracker.class);
 
 	private static final Map<Long, Bundle> _bundleMap =
 		new ConcurrentHashMap<>();
