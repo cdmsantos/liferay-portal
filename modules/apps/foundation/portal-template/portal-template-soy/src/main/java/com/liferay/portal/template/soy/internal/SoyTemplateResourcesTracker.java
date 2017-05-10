@@ -34,6 +34,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.BundleRevision;
+import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -69,10 +71,21 @@ public class SoyTemplateResourcesTracker {
 	}
 
 	@Reference(unbind = "-")
+	protected void setSoyProviderCapabilityBundleRegister(
+		SoyProviderCapabilityBundleRegister
+			soyProviderCapabilityBundleRegister) {
+
+		_soyProviderCapabilityBundleRegister =
+			soyProviderCapabilityBundleRegister;
+	}
+
+	@Reference(unbind = "-")
 	protected void setSoyTemplateBundleResourceParser(
 		SoyTemplateBundleResourceParser soyTemplateBundleResourceParser) {
 	}
 
+	private static SoyProviderCapabilityBundleRegister
+		_soyProviderCapabilityBundleRegister;
 	private static final List<TemplateResource> _templateResources =
 		new CopyOnWriteArrayList<>();
 
@@ -97,6 +110,15 @@ public class SoyTemplateResourcesTracker {
 			if (ListUtil.isEmpty(bundleCapabilities)) {
 				return bundleCapabilities;
 			}
+
+			for (BundleWire bundleWire : bundleWiring.getRequiredWires("soy")) {
+				BundleRevision bundleRevision = bundleWire.getProvider();
+
+				_soyProviderCapabilityBundleRegister.register(
+					bundleRevision.getBundle());
+			}
+
+			_soyProviderCapabilityBundleRegister.register(bundle);
 
 			_addTemplateResourcesToList(bundle);
 
@@ -127,6 +149,8 @@ public class SoyTemplateResourcesTracker {
 				_removeBundleTemplateResourcesFromList(bundle);
 
 			_soyTofuCacheHandler.removeIfAny(removedTemplateResources);
+
+			_soyProviderCapabilityBundleRegister.unregister(bundle);
 		}
 
 		private void _addTemplateResourcesToList(Bundle bundle) {

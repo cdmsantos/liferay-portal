@@ -43,13 +43,14 @@ public class SoyTemplateBundleResourceParser extends URLResourceParser {
 		String templateName = templateId.substring(
 			pos + TemplateConstants.BUNDLE_SEPARATOR.length());
 
-		Bundle bundle = _soyCapabilityBundleTracker.getTemplateBundle(
+		Bundle bundle = _soyProviderCapabilityBundleRegister.getTemplateBundle(
 			templateId);
 
 		return bundle.getResource(templateName);
 	}
 
 	@Reference(unbind = "-")
-	private SoyCapabilityBundleTracker _soyCapabilityBundleTracker;
+	private SoyProviderCapabilityBundleRegister
+		_soyProviderCapabilityBundleRegister;
 
 }
