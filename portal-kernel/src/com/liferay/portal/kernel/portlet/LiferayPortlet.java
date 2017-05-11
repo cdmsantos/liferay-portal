@@ -193,12 +193,10 @@ public class LiferayPortlet extends GenericPortlet {
 				return true;
 			}
 			catch (Exception e) {
-				if (_log.isInfoEnabled()) {
-					_log.info(
-						String.format(
-							"actionName = %s, namespace =", actionName,
-							actionResponse.getNamespace()));
-				}
+				_log.error(
+					String.format(
+						"actionName = %s, namespace =", actionName,
+						actionResponse.getNamespace()));
 
 				throw new PortletException(e);
 			}
