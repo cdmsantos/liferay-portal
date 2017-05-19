@@ -32,36 +32,32 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Marcellus Tavares
  */
+@Component(immediate = true, service = SoyTemplateResourcesCollector.class)
 public class SoyTemplateResourcesCollector {
 
-	public SoyTemplateResourcesCollector(
-		Bundle bundle, SoyTemplateResourceLoader soyTemplateResourceLoader,
-		String templatePath) {
-
-		_bundle = bundle;
-		_soyTemplateResourceLoader = soyTemplateResourceLoader;
-		_templatePath = templatePath;
-	}
-
-	public List<TemplateResource> getTemplateResources()
+	public List<TemplateResource> getTemplateResources(
+			Bundle bundle, String templatePath)
 		throws TemplateException {
 
 		List<TemplateResource> templateResources = new ArrayList<>();
 
-		collectBundleTemplateResources(templateResources);
-		collectProviderBundlesTemplateResources(templateResources);
+		collectBundleTemplateResources(bundle, templatePath, templateResources);
+		collectProviderBundlesTemplateResources(bundle, templateResources);
 
 		return templateResources;
 	}
 
 	protected void collectBundleTemplateResources(
-		Bundle bundle, List<TemplateResource> templateResources) {
+		Bundle bundle, String templatePath,
+		List<TemplateResource> templateResources) {
 
-		List<URL> urls = getSoyResourceURLs(bundle, _templatePath);
+		List<URL> urls = getSoyResourceURLs(bundle, templatePath);
 
 		for (URL url : urls) {
 			String templateId = getTemplateId(bundle.getBundleId(), url);
@@ -82,17 +78,11 @@ public class SoyTemplateResourcesCollector {
 		}
 	}
 
-	protected void collectBundleTemplateResources(
-		List<TemplateResource> templateResources) {
-
-		collectBundleTemplateResources(_bundle, templateResources);
-	}
-
 	protected void collectProviderBundlesTemplateResources(
-			List<TemplateResource> templateResources)
+			Bundle bundle, List<TemplateResource> templateResources)
 		throws TemplateException {
 
-		BundleWiring bundleWiring = _bundle.adapt(BundleWiring.class);
+		BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
 
 		for (BundleWire bundleWire : bundleWiring.getRequiredWires("soy")) {
 			Bundle providerBundle = getProviderBundle(bundleWire);
@@ -153,13 +143,18 @@ public class SoyTemplateResourcesCollector {
 			TemplateConstants.BUNDLE_SEPARATOR).concat(url.getPath());
 	}
 
+	@Reference(unbind = "-")
+	protected void setSoyTemplateResourceLoader(
+		SoyTemplateResourceLoader soyTemplateResourceLoader) {
+
+		_soyTemplateResourceLoader = soyTemplateResourceLoader;
+	}
+
 	private static final String _SOY_FILE_EXTENSION = "*.soy";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		SoyTemplateResourcesCollector.class);
 
-	private final Bundle _bundle;
-	private final SoyTemplateResourceLoader _soyTemplateResourceLoader;
-	private final String _templatePath;
+	private SoyTemplateResourceLoader _soyTemplateResourceLoader;
 
 }

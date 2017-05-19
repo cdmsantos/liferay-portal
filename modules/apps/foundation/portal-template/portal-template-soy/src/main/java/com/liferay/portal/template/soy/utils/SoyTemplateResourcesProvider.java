@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.template.TemplateException;
 import com.liferay.portal.kernel.template.TemplateResource;
 import com.liferay.portal.template.soy.internal.SoyProviderCapabilityBundleRegister;
-import com.liferay.portal.template.soy.internal.SoyTemplateResourceLoader;
 import com.liferay.portal.template.soy.internal.SoyTemplateResourcesCollector;
 import com.liferay.portal.template.soy.internal.SoyTemplateResourcesTracker;
 
@@ -45,11 +44,8 @@ public class SoyTemplateResourcesProvider {
 		Bundle bundle, String templatePath) {
 
 		try {
-			SoyTemplateResourcesCollector soyTemplateResourcesCollector =
-				new SoyTemplateResourcesCollector(
-					bundle, _soyTemplateResourceLoader, templatePath);
-
-			return soyTemplateResourcesCollector.getTemplateResources();
+			return _soyTemplateResourcesCollector.getTemplateResources(
+				bundle, templatePath);
 		}
 		catch (TemplateException te) {
 			if (_log.isDebugEnabled()) {
@@ -80,10 +76,10 @@ public class SoyTemplateResourcesProvider {
 	}
 
 	@Reference(unbind = "-")
-	protected void setSoyTemplateResourceLoader(
-		SoyTemplateResourceLoader soyTemplateResourceLoader) {
+	protected void setSoyTemplateResourcesCollector(
+		SoyTemplateResourcesCollector soyTemplateResourcesCollector) {
 
-		_soyTemplateResourceLoader = soyTemplateResourceLoader;
+		_soyTemplateResourcesCollector = soyTemplateResourcesCollector;
 	}
 
 	@Reference(unbind = "-")
@@ -98,7 +94,7 @@ public class SoyTemplateResourcesProvider {
 
 	private static SoyProviderCapabilityBundleRegister
 		_soyProviderCapabilityBundleRegister;
-	private static SoyTemplateResourceLoader _soyTemplateResourceLoader;
+	private static SoyTemplateResourcesCollector _soyTemplateResourcesCollector;
 	private static SoyTemplateResourcesTracker _soyTemplateResourcesTracker;
 
 }
