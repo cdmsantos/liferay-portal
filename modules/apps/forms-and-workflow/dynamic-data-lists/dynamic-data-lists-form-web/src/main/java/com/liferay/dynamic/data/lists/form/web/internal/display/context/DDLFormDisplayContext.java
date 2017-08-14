@@ -36,8 +36,11 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.LayoutSetLocalService;
+import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.servlet.SessionMessages;
@@ -54,12 +57,11 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
-import java.util.List;
-
 import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceURL;
+import java.util.List;
 
 /**
  * @author Marcellus Tavares
@@ -72,6 +74,7 @@ public class DDLFormDisplayContext {
 			DDLRecordVersionLocalService ddlRecordVersionLocalService,
 			DDMFormRenderer ddmFormRenderer,
 			DDMFormValuesFactory ddmFormValuesFactory,
+			LayoutSetLocalService layoutSetLocalService,
 			WorkflowDefinitionLinkLocalService
 				workflowDefinitionLinkLocalService)
 		throws PortalException {
@@ -85,6 +88,7 @@ public class DDLFormDisplayContext {
 		_workflowDefinitionLinkLocalService =
 			workflowDefinitionLinkLocalService;
 		_containerId = StringUtil.randomString();
+		_layoutSetLocalService = layoutSetLocalService;
 
 		if (Validator.isNotNull(getPortletResource())) {
 			return;
@@ -291,12 +295,24 @@ public class DDLFormDisplayContext {
 
 		ThemeDisplay themeDisplay = getThemeDisplay();
 
+		if(isSharedURL()) {
+			updateThemeId(themeDisplay);
+		}
+
 		ddmFormRenderingContext.setLocale(themeDisplay.getLocale());
 
 		ddmFormRenderingContext.setPortletNamespace(
 			_renderResponse.getNamespace());
 
 		return ddmFormRenderingContext;
+	}
+
+	protected void updateThemeId(ThemeDisplay themeDisplay) {
+		LayoutSet layoutSet = themeDisplay.getLayoutSet();
+
+		layoutSet.setThemeId("formsdefaulttheme_WAR_formsdefaulttheme");
+
+		LayoutSetLocalServiceUtil.updateLayoutSet(layoutSet);
 	}
 
 	protected DDMFormLayoutRow createFullColumnDDMFormLayoutRow(
@@ -515,6 +531,8 @@ public class DDLFormDisplayContext {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDLFormDisplayContext.class);
+
+	private final LayoutSetLocalService _layoutSetLocalService;
 
 	private Boolean _autosaveEnabled;
 	private final String _containerId;
