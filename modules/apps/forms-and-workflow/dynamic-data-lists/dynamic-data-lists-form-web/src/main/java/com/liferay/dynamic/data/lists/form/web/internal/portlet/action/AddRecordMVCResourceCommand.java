@@ -15,6 +15,7 @@
 package com.liferay.dynamic.data.lists.form.web.internal.portlet.action;
 
 import com.liferay.dynamic.data.lists.form.web.constants.DDLFormPortletKeys;
+import com.liferay.dynamic.data.lists.form.web.internal.portlet.action.util.DDMFormTemplateContextProcessor;
 import com.liferay.dynamic.data.lists.model.DDLRecord;
 import com.liferay.dynamic.data.lists.model.DDLRecordConstants;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
@@ -130,21 +131,13 @@ public class AddRecordMVCResourceCommand extends BaseMVCResourceCommand {
 		if (Validator.isNull(serializedDDMFormValues)) {
 			return null;
 		}
-
-		DDMForm ddmForm = getDDMForm(recordSet);
-
-		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
-
-		setDDMFormValuesLocales(
-			_portal.getSiteDefaultLocale(recordSet.getGroupId()),
-			ddmFormValues);
-
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			serializedDDMFormValues);
+				serializedDDMFormValues);
 
-		createDDMFormFieldValues(ddmFormValues, jsonObject);
+		DDMFormTemplateContextProcessor contextProcessor =
+			new DDMFormTemplateContextProcessor(jsonObject);
 
-		return ddmFormValues;
+		return contextProcessor.getDDMFormValues();
 	}
 
 	protected Value createLocalizedValue(
