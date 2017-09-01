@@ -34,15 +34,35 @@ public class UserModel {
 	public String getName() {
 		return _name;
 	}
+
+	@XmlElement
+	public String getCpf() {
+		return _cpf;
+	}
+	
+	@XmlElement
+	public String getBirthday() {
+		return _birthday;
+	}
 	
 	public void setUserId(long userId) {
 		this._userId = userId;
 	}
 
-	public void setName(String userId) {
-		this._name = userId;
+	public void setName(String name) {
+		this._name = name;
+	}
+
+	public void setCpf(String cpf) {
+		this._cpf = cpf;
+	}
+
+	public void setBirthday(String birthday) {
+		this._birthday = birthday;
 	}
 
 	private long _userId;
 	private String _name;
+	private String _cpf;
+	private String _birthday;
 }

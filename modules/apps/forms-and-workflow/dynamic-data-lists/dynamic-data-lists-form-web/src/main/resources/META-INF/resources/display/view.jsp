@@ -160,7 +160,7 @@ long recordSetId = ddlFormDisplayContext.getRecordSetId();
 									clearInterval(<portlet:namespace />intervalId);
 								}
 
-								<portlet:namespace />intervalId = setInterval(<portlet:namespace />autoSave, 1000);
+								<portlet:namespace />intervalId = setInterval(<portlet:namespace />autoSave, 10000);
 							}
 
 							<portlet:namespace />form = Liferay.component('<%= ddlFormDisplayContext.getContainerId() %>DDMForm');
