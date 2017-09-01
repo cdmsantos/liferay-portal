@@ -35,9 +35,13 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.push.notifications.service.PushNotificationsDeviceLocalService;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
@@ -81,14 +85,24 @@ public class DDLFormEntryModelListener extends BaseModelListener<DDLRecord>  {
 
 			JSONArray jsonArray = _jsonFactory.createJSONArray(json);
 			
-			long clientUserId = Long.parseLong(jsonArray.getString(0));
+			long clientUserId = 0;
+			
+			User clientUser = null;
+			
+			if(jsonArray.length() > 0) {
+				clientUserId = Long.parseLong(jsonArray.getString(0));
 
-			User clientUser = _userLocalService.getUser(clientUserId);
+				clientUser = _userLocalService.getUser(clientUserId);
+			}
+			else {
+				clientUserId = ddlRecord.getUserId();
 
-			if (isCallCenterUser(ddlRecord.getUserId())) {
+				clientUser = _userLocalService.getUser(clientUserId);
+			}
+
+			if (jsonArray.length() > 0 && isCallCenterUser(ddlRecord.getUserId())) {
 				
 				ddlRecord.setUserId(clientUserId);
-				
 				
 				ddlRecord.setUserName(clientUser.getFullName());
 				
@@ -101,7 +115,7 @@ public class DDLFormEntryModelListener extends BaseModelListener<DDLRecord>  {
 				
 				JSONObject payloadJSONObject = _jsonFactory.createJSONObject();
 				
-				payloadJSONObject.put("message", "test push notification");
+				payloadJSONObject.put("message", "Complete sua solicitacao de cartao");
 				payloadJSONObject.put(
 					"formUrl",
 					"http://192.168.109.48:8080/group/forms/shared/-/form/34874");
@@ -118,8 +132,8 @@ public class DDLFormEntryModelListener extends BaseModelListener<DDLRecord>  {
 						new InternetAddress(clientUser.getEmailAddress(), clientUser.getFullName());
 					
 					MailMessage mailMessage = new MailMessage(
-						fromAddress, toAddress, "Solicitacao de Credito",
-						"visit: http://192.168.109.48:8080/group/forms/shared/-/form/34874",
+						fromAddress, toAddress, "Rays Banking | Solicitacao de Credito",
+						body("Olá, " + clientUser.getFullName() + ". Agora é só completar o seu cadastro.", "Estamos Quase lá!", "true"),
 						true);
 
 					_mailService.sendEmail(mailMessage);
@@ -138,14 +152,13 @@ public class DDLFormEntryModelListener extends BaseModelListener<DDLRecord>  {
 					rendMensalFormFieldValue.getValue().getString(
 						ddmFormValues.getDefaultLocale()));
 				
-				
-				if (rendaMensal >= 5000) {
+				if (rendaMensal >= 2500) {
 					
 					JSONObject payloadJSONObject = _jsonFactory.createJSONObject();
 					
-					payloadJSONObject.put("creditLimit", 7500);
-					payloadJSONObject.put("cardType", "Platinum");
-					payloadJSONObject.put("message", "Parabens");
+					payloadJSONObject.put("creditLimit", rendaMensal < 5000 ? rendaMensal*1.1 : rendaMensal*1.3);
+					payloadJSONObject.put("cardType", rendaMensal < 5000 ? 1 : 0);
+					payloadJSONObject.put("message", "Parabens, seu credito foi aprovado");
 					
 					_pushNotificationsDeviceLocalService.sendPushNotification(
 						new long[]{clientUserId}, payloadJSONObject);
@@ -159,13 +172,13 @@ public class DDLFormEntryModelListener extends BaseModelListener<DDLRecord>  {
 							new InternetAddress(clientUser.getEmailAddress(), clientUser.getFullName());
 						
 						MailMessage mailMessage = new MailMessage(
-							fromAddress, toAddress, "Credito Aprovado",
-							"visit: http://192.168.109.48:8080/group/forms/shared/-/form/34874",
+							fromAddress, toAddress,
+							"Rays Banking | Credito Aprovado",
+							body("Parabens! Aproveite as vantagens do seu cartao", "Credito Aprovado!" ,"false"),
 							true);
 
 						_mailService.sendEmail(mailMessage);
 					} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -190,8 +203,9 @@ public class DDLFormEntryModelListener extends BaseModelListener<DDLRecord>  {
 							new InternetAddress(clientUser.getEmailAddress(), clientUser.getFullName());
 						
 						MailMessage mailMessage = new MailMessage(
-							fromAddress, toAddress, "Credito Nao Aprovado",
-							"Nao foi dessa vez",
+							fromAddress, toAddress,
+							"Rays Banking | Credito Nao Aprovado",
+							body("Nao foi dessa vez :(", "Credito nao Aprovado", "false"),
 							true);
 
 						_mailService.sendEmail(mailMessage);
@@ -200,13 +214,36 @@ public class DDLFormEntryModelListener extends BaseModelListener<DDLRecord>  {
 						e.printStackTrace();
 					}
 				}
-				
 			}
 			
 			
 		} catch (PortalException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public String body(String message, String title, String display) {
+		try {
+			String template = read("email-template.tmpl");
+			return StringUtil.replace(
+					template,
+					new String[]{"[$MESSAGE$]", "[$TITLE$]", "[$DISPLAY$]"},
+					new String[]{message, title, display});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return StringPool.BLANK;
+	}
+	
+	protected String read(String fileName) throws IOException {
+		Class<?> clazz = getClass();
+
+		InputStream inputStream = clazz.getResourceAsStream(fileName);
+
+		return StringUtil.read(inputStream);
 	}
 	
 	
