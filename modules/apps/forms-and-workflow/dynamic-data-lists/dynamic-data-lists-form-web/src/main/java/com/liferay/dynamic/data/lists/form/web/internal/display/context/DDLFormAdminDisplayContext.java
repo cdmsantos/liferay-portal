@@ -18,11 +18,7 @@ import com.liferay.dynamic.data.lists.constants.DDLActionKeys;
 import com.liferay.dynamic.data.lists.constants.DDLWebKeys;
 import com.liferay.dynamic.data.lists.form.web.configuration.DDLFormWebConfiguration;
 import com.liferay.dynamic.data.lists.form.web.constants.DDLFormPortletKeys;
-import com.liferay.dynamic.data.lists.form.web.internal.converter.DDMFormRuleToDDLFormRuleConverter;
-import com.liferay.dynamic.data.lists.form.web.internal.converter.model.DDLFormRule;
 import com.liferay.dynamic.data.lists.form.web.internal.display.context.util.DDLFormAdminRequestHelper;
-import com.liferay.dynamic.data.lists.form.web.internal.display.context.util.DDMExpressionFunctionMetadataHelper;
-import com.liferay.dynamic.data.lists.form.web.internal.display.context.util.DDMExpressionFunctionMetadataHelper.DDMExpressionFunctionMetadata;
 import com.liferay.dynamic.data.lists.form.web.internal.search.RecordSetSearch;
 import com.liferay.dynamic.data.lists.model.DDLFormRecord;
 import com.liferay.dynamic.data.lists.model.DDLRecord;
@@ -40,7 +36,6 @@ import com.liferay.dynamic.data.lists.util.comparator.DDLRecordSetNameComparator
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
-import com.liferay.dynamic.data.mapping.form.renderer.DDMFormTemplateContextFactory;
 import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
 import com.liferay.dynamic.data.mapping.io.DDMFormFieldTypesJSONSerializer;
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
@@ -56,7 +51,6 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONSerializer;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -85,7 +79,6 @@ import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -109,12 +102,9 @@ public class DDLFormAdminDisplayContext {
 		DDLFormWebConfiguration ddlFormWebConfiguration,
 		DDLRecordLocalService ddlRecordLocalService,
 		DDLRecordSetService ddlRecordSetService,
-		Servlet ddmFormContextProviderServlet,
 		DDMFormFieldTypeServicesTracker ddmFormFieldTypeServicesTracker,
 		DDMFormFieldTypesJSONSerializer ddmFormFieldTypesJSONSerializer,
 		DDMFormRenderer ddmFormRenderer,
-		DDMFormRuleToDDLFormRuleConverter ddmFormRulesToDDLFormRulesConverter,
-		DDMFormTemplateContextFactory ddmFormTemplateContextFactory,
 		DDMFormValuesFactory ddmFormValuesFactory,
 		DDMFormValuesMerger ddmFormValuesMerger,
 		DDMStructureLocalService ddmStructureLocalService,
@@ -127,13 +117,9 @@ public class DDLFormAdminDisplayContext {
 		_ddlFormWebConfiguration = ddlFormWebConfiguration;
 		_ddlRecordLocalService = ddlRecordLocalService;
 		_ddlRecordSetService = ddlRecordSetService;
-		_ddmFormContextProviderServlet = ddmFormContextProviderServlet;
 		_ddmFormFieldTypeServicesTracker = ddmFormFieldTypeServicesTracker;
 		_ddmFormFieldTypesJSONSerializer = ddmFormFieldTypesJSONSerializer;
 		_ddmFormRenderer = ddmFormRenderer;
-		_ddmFormRulesToDDLFormRulesConverter =
-			ddmFormRulesToDDLFormRulesConverter;
-		_ddmFormTemplateContextFactory = ddmFormTemplateContextFactory;
 		_ddmFormValuesFactory = ddmFormValuesFactory;
 		_ddmFormValuesMerger = ddmFormValuesMerger;
 		_ddmStructureLocalService = ddmStructureLocalService;
@@ -144,8 +130,6 @@ public class DDLFormAdminDisplayContext {
 
 		ddlFormAdminRequestHelper = new DDLFormAdminRequestHelper(
 			renderRequest);
-		_ddmExpressionFunctionMetadataHelper =
-			new DDMExpressionFunctionMetadataHelper(getResourceBundle());
 	}
 
 	public int getAutosaveInterval() {
@@ -192,12 +176,16 @@ public class DDLFormAdminDisplayContext {
 			_storageEngine);
 	}
 
-	public String getDDMFormContextProviderServletURL() {
-		String servletContextPath = getServletContextPath(
-			_ddmFormContextProviderServlet);
+	public DDMForm getDDMForm() throws PortalException {
+		DDMStructure ddmStructure = getDDMStructure();
 
-		return servletContextPath.concat(
-			"/dynamic-data-mapping-form-context-provider/");
+		DDMForm ddmForm = new DDMForm();
+
+		if (ddmStructure != null) {
+			ddmForm = ddmStructure.getDDMForm();
+		}
+
+		return ddmForm;
 	}
 
 	public JSONArray getDDMFormFieldTypesJSONArray() throws PortalException {
@@ -234,6 +222,16 @@ public class DDLFormAdminDisplayContext {
 			recordSet.getDDMStructureId());
 
 		return _ddmStructure;
+	}
+
+	public long getDDMStrucutureId() throws PortalException {
+		DDMStructure ddmStructure = getDDMStructure();
+
+		if (ddmStructure == null) {
+			return 0;
+		}
+
+		return ddmStructure.getStructureId();
 	}
 
 	public DDMStructureService getDDMStructureService() {
@@ -539,6 +537,12 @@ public class DDLFormAdminDisplayContext {
 		setRecordSetSearchTotal(recordSetSearch);
 
 		return recordSetSearch;
+	}
+
+	public DDLRecordVersion getRecordVersion() throws PortalException {
+		DDLRecord record = getRecord();
+
+		return record.getLatestRecordVersion();
 	}
 
 	public String getSearchContainerId() {
@@ -1006,17 +1010,11 @@ public class DDLFormAdminDisplayContext {
 	private final DDLFormWebConfiguration _ddlFormWebConfiguration;
 	private final DDLRecordLocalService _ddlRecordLocalService;
 	private final DDLRecordSetService _ddlRecordSetService;
-	private final DDMExpressionFunctionMetadataHelper
-		_ddmExpressionFunctionMetadataHelper;
-	private final Servlet _ddmFormContextProviderServlet;
 	private final DDMFormFieldTypeServicesTracker
 		_ddmFormFieldTypeServicesTracker;
 	private final DDMFormFieldTypesJSONSerializer
 		_ddmFormFieldTypesJSONSerializer;
 	private final DDMFormRenderer _ddmFormRenderer;
-	private final DDMFormRuleToDDLFormRuleConverter
-		_ddmFormRulesToDDLFormRulesConverter;
-	private final DDMFormTemplateContextFactory _ddmFormTemplateContextFactory;
 	private final DDMFormValuesFactory _ddmFormValuesFactory;
 	private final DDMFormValuesMerger _ddmFormValuesMerger;
 	private DDMStructure _ddmStructure;
