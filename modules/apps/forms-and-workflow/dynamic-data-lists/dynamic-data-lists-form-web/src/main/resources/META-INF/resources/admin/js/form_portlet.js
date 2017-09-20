@@ -3,8 +3,6 @@ AUI.add(
 	function(A) {
 		var LayoutSerializer = Liferay.DDL.LayoutSerializer;
 
-		var Settings = Liferay.DDL.Settings;
-
 		var EMPTY_FN = A.Lang.emptyFn;
 
 		var MINUTE = 60000;
@@ -426,7 +424,7 @@ AUI.add(
 								var formData = instance._getFormData(A.IO.stringify(editForm.form));
 
 								A.io.request(
-									Settings.autosaveURL,
+									Liferay.DDL.Settings.autosaveURL,
 									{
 										after: {
 											success: function(event, id, xhr) {
@@ -476,10 +474,10 @@ AUI.add(
 						var requireAuthenticationField = settingsDDMForm.getField('requireAuthentication');
 
 						if (requireAuthenticationField.getValue()) {
-							formURL = Settings.restrictedFormURL;
+							formURL = Liferay.DDL.Settings.restrictedFormURL;
 						}
 						else {
-							formURL = Settings.sharedFormURL;
+							formURL = Liferay.DDL.Settings.sharedFormURL;
 						}
 
 						var recordSetId = instance.byId('recordSetId').val();
@@ -699,7 +697,7 @@ AUI.add(
 								);
 
 								A.io.request(
-									Settings.publishRecordSetURL,
+									Liferay.DDL.Settings.publishRecordSetURL,
 									{
 										after: {
 											success: function(event, id, xhr) {
