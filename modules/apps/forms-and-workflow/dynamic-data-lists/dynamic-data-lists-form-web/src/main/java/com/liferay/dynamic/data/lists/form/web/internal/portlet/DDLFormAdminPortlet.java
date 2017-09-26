@@ -286,16 +286,13 @@ public class DDLFormAdminPortlet extends MVCPortlet {
 				new DDLFormAdminFieldSetDisplayContext(
 					renderRequest, renderResponse,
 					_ddlFormWebConfigurationActivator.
-						getDDLFormWebConfiguration(),
-					_ddlRecordLocalService, _ddlRecordSetService,
-					_ddmFormContextProviderServlet,
-					_ddmFormFieldTypeServicesTracker,
+						getDDLFormWebConfiguration(), _ddlRecordLocalService,
+					_ddlRecordSetService, _ddmFormFieldTypeServicesTracker,
 					_ddmFormFieldTypesJSONSerializer, _ddmFormRenderer,
-					_ddmFormRulesToDDLFormRulesConverter,
-					_ddmFormTemplateContextFactory, _ddmFormValuesFactory,
-					_ddmFormValuesMerger, _ddmStructureLocalService,
-					_ddmStructureService, _jsonFactory, _storageEngine,
-					_workflowEngineManager));
+					_ddmFormValuesFactory, _ddmFormValuesMerger,
+					_ddmStructureLocalService, _ddmStructureService,
+					_jsonFactory, _storageEngine, _workflowEngineManager)
+				);
 		}
 		else {
 			ThemeDisplay themeDisplay =
@@ -329,14 +326,11 @@ public class DDLFormAdminPortlet extends MVCPortlet {
 					_ddlFormWebConfigurationActivator.
 						getDDLFormWebConfiguration(),
 					_ddlRecordLocalService, _ddlRecordSetService,
-					_ddmFormContextProviderServlet,
 					_ddmFormFieldTypeServicesTracker,
 					_ddmFormFieldTypesJSONSerializer, _ddmFormRenderer,
-					_ddmFormRulesToDDLFormRulesConverter,
-					_ddmFormTemplateContextFactory, _ddmFormValuesFactory,
-					_ddmFormValuesMerger, _ddmStructureLocalService,
-					_ddmStructureService, _jsonFactory, _storageEngine,
-					_workflowEngineManager));
+					_ddmFormValuesFactory, _ddmFormValuesMerger,
+					_ddmStructureLocalService, _ddmStructureService,
+					_jsonFactory, _storageEngine, _workflowEngineManager));
 		}
 	}
 

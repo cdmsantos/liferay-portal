@@ -15,7 +15,6 @@
 package com.liferay.dynamic.data.lists.form.web.internal.display.context;
 
 import com.liferay.dynamic.data.lists.form.web.configuration.DDLFormWebConfiguration;
-import com.liferay.dynamic.data.lists.form.web.internal.converter.DDMFormRuleToDDLFormRuleConverter;
 import com.liferay.dynamic.data.lists.form.web.internal.search.FieldSetSearch;
 import com.liferay.dynamic.data.lists.form.web.internal.search.FieldSetSearchTerms;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
@@ -60,8 +59,6 @@ import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import javax.servlet.Servlet;
-
 /**
  * @author Leonardo Barros
  */
@@ -73,12 +70,9 @@ public class DDLFormAdminFieldSetDisplayContext
 		DDLFormWebConfiguration ddlFormWebConfiguration,
 		DDLRecordLocalService ddlRecordLocalService,
 		DDLRecordSetService ddlRecordSetService,
-		Servlet ddmFormContextProviderServlet,
 		DDMFormFieldTypeServicesTracker ddmFormFieldTypeServicesTracker,
 		DDMFormFieldTypesJSONSerializer ddmFormFieldTypesJSONSerializer,
 		DDMFormRenderer ddmFormRenderer,
-		DDMFormRuleToDDLFormRuleConverter ddmFormRulesToDDLFormRulesConverter,
-		DDMFormTemplateContextFactory ddmFormTemplateContextFactory,
 		DDMFormValuesFactory ddmFormValuesFactory,
 		DDMFormValuesMerger ddmFormValuesMerger,
 		DDMStructureLocalService ddmStructureLocalService,
@@ -89,12 +83,10 @@ public class DDLFormAdminFieldSetDisplayContext
 		super(
 			renderRequest, renderResponse, ddlFormWebConfiguration,
 			ddlRecordLocalService, ddlRecordSetService,
-			ddmFormContextProviderServlet, ddmFormFieldTypeServicesTracker,
-			ddmFormFieldTypesJSONSerializer, ddmFormRenderer,
-			ddmFormRulesToDDLFormRulesConverter, ddmFormTemplateContextFactory,
-			ddmFormValuesFactory, ddmFormValuesMerger, ddmStructureLocalService,
-			ddmStructureService, jsonFactory, storageEngine,
-			workflowEngineManager);
+			ddmFormFieldTypeServicesTracker, ddmFormFieldTypesJSONSerializer,
+			ddmFormRenderer, ddmFormValuesFactory, ddmFormValuesMerger,
+			ddmStructureLocalService, ddmStructureService, jsonFactory,
+			storageEngine, workflowEngineManager);
 	}
 
 	@Override

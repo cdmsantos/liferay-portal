@@ -176,18 +176,6 @@ public class DDLFormAdminDisplayContext {
 			_storageEngine);
 	}
 
-	public DDMForm getDDMForm() throws PortalException {
-		DDMStructure ddmStructure = getDDMStructure();
-
-		DDMForm ddmForm = new DDMForm();
-
-		if (ddmStructure != null) {
-			ddmForm = ddmStructure.getDDMForm();
-		}
-
-		return ddmForm;
-	}
-
 	public JSONArray getDDMFormFieldTypesJSONArray() throws PortalException {
 		List<DDMFormFieldType> ddmFormFieldTypes =
 			_ddmFormFieldTypeServicesTracker.getDDMFormFieldTypes();
@@ -265,34 +253,6 @@ public class DDLFormAdminDisplayContext {
 
 	public String[] getDisplayViews() {
 		return _DISPLAY_VIEWS;
-	}
-
-	public String getFormBuilderContext() throws PortalException {
-		ThemeDisplay themeDisplay = ddlFormAdminRequestHelper.getThemeDisplay();
-
-		String serializedFormBuilderContext = ParamUtil.getString(
-			_renderRequest, "serializedFormBuilderContext");
-
-		if (Validator.isNotNull(serializedFormBuilderContext)) {
-			return serializedFormBuilderContext;
-		}
-
-		JSONSerializer jsonSerializer = _jsonFactory.createJSONSerializer();
-
-		Optional<DDMStructure> recordSetOptional = Optional.ofNullable(
-			getDDMStructure());
-
-		DDLFormBuilderContextFactory ddlFormBuilderContextFactory =
-			new DDLFormBuilderContextFactory(
-				recordSetOptional, _ddmFormFieldTypeServicesTracker,
-				_ddmFormTemplateContextFactory, themeDisplay.getRequest(),
-				themeDisplay.getResponse(), _jsonFactory,
-				ddlFormAdminRequestHelper.getLocale(), true);
-
-		Map<String, Object> formBuilderContext =
-			ddlFormBuilderContextFactory.create();
-
-		return jsonSerializer.serializeDeep(formBuilderContext);
 	}
 
 	public String getFormDescription() throws PortalException {
@@ -539,37 +499,8 @@ public class DDLFormAdminDisplayContext {
 		return recordSetSearch;
 	}
 
-	public DDLRecordVersion getRecordVersion() throws PortalException {
-		DDLRecord record = getRecord();
-
-		return record.getLatestRecordVersion();
-	}
-
 	public String getSearchContainerId() {
 		return "ddlRecordSet";
-	}
-
-	public String getSerializedDDMExpressionFunctionsMetadata() {
-		JSONSerializer jsonSerializer = _jsonFactory.createJSONSerializer();
-
-		Map<String, List<DDMExpressionFunctionMetadata>>
-			ddmExpressionFunctionsMetadata =
-				_ddmExpressionFunctionMetadataHelper.
-					getDDMExpressionFunctionsMetadata();
-
-		return jsonSerializer.serializeDeep(ddmExpressionFunctionsMetadata);
-	}
-
-	public String getSerializedDDMFormRules() throws PortalException {
-		JSONSerializer jsonSerializer = _jsonFactory.createJSONSerializer();
-
-		DDMForm ddmForm = getDDMForm();
-
-		List<DDLFormRule> ddlFormRules =
-			_ddmFormRulesToDDLFormRulesConverter.convert(
-				ddmForm.getDDMFormRules());
-
-		return jsonSerializer.serializeDeep(ddlFormRules);
 	}
 
 	public String getSharedFormURL() {
