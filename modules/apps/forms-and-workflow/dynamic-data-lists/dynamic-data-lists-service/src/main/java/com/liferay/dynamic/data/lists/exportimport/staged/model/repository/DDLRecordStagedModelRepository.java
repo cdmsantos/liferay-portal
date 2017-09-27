@@ -279,11 +279,13 @@ public class DDLRecordStagedModelRepository
 		DDLRecordVersion importedRecordVersion =
 			importedRecord.getRecordVersion();
 
-		importedRecord.setVersion(version);
 		importedRecordVersion.setVersion(version);
 
 		_ddlRecordVersionLocalService.updateDDLRecordVersion(
 			importedRecordVersion);
+
+		importedRecord.setVersion(version);
+
 		_ddlRecordLocalService.updateDDLRecord(importedRecord);
 	}
 
