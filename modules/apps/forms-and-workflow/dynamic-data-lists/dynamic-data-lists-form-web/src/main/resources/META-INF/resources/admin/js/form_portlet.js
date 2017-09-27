@@ -90,7 +90,7 @@ AUI.add(
 							instance._eventHandlers = [];
 						}
 
-						if (window.DDLRuleBuilder) {
+						if (window.DDMRuleBuilder) {
 							instance._onRuleBuilderLoaded();
 						}
 						else {
