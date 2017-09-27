@@ -150,18 +150,16 @@ public class DDLRecordStagedModelDataHandlerTest
 
 	@Test
 	public void testVersionMatchingAfterExportImport() throws Exception {
-		String textFieldName = "Text";
-
-		DDLRecordSet recordSet = addRecordSetWithTextField(textFieldName);
+		String fieldName = "Text";
 
 		DDLRecordTestHelper recordTestHelper = new DDLRecordTestHelper(
-			stagingGroup, recordSet);
+			stagingGroup, addRecordSetWithTextField(fieldName));
 
 		DDMFormValues ddmFormValues =
 			recordTestHelper.createEmptyDDMFormValues();
 
 		DDMFormFieldValue ddmFormFieldValue = createTextDDMFormFieldValue(
-			ddmFormValues.getDefaultLocale(), textFieldName, "text 1");
+			ddmFormValues.getDefaultLocale(), fieldName, "text 1");
 
 		ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
 
@@ -250,13 +248,13 @@ public class DDLRecordStagedModelDataHandlerTest
 		return recordSetTestHelper.addRecordSet(ddmStructure);
 	}
 
-	protected DDLRecordSet addRecordSetWithTextField(String textFieldName)
+	protected DDLRecordSet addRecordSetWithTextField(String fieldName)
 		throws Exception {
 
 		DDMForm ddmForm = DDMFormTestUtil.createDDMForm();
 
 		DDMFormField textFormField = DDMFormTestUtil.createTextDDMFormField(
-			textFieldName, true, false, false);
+			fieldName, true, false, false);
 
 		ddmForm.addDDMFormField(textFormField);
 
