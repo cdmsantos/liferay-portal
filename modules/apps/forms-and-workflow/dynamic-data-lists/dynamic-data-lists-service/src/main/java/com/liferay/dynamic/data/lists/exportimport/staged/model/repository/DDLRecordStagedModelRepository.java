@@ -87,7 +87,7 @@ public class DDLRecordStagedModelRepository
 			userId, ddlRecord.getGroupId(), ddlRecord.getRecordSetId(),
 			ddlRecord.getDisplayIndex(), ddmFormValues, serviceContext);
 
-		overrideRecordVersion(importedRecord, ddlRecord.getVersion());
+		updateVersions(importedRecord, ddlRecord.getVersion());
 
 		return importedRecord;
 	}
@@ -209,7 +209,7 @@ public class DDLRecordStagedModelRepository
 			userId, ddlRecord.getRecordId(), false, ddlRecord.getDisplayIndex(),
 			ddmFormValues, serviceContext);
 
-		overrideRecordVersion(importedRecord, ddlRecord.getVersion());
+		updateVersions(importedRecord, ddlRecord.getVersion());
 
 		return importedRecord;
 	}
@@ -268,8 +268,7 @@ public class DDLRecordStagedModelRepository
 		return recordVersionDynamicQuery;
 	}
 
-	protected void overrideRecordVersion(
-			DDLRecord importedRecord, String version)
+	protected void updateVersions(DDLRecord importedRecord, String version)
 		throws PortalException {
 
 		if (Objects.equals(importedRecord.getVersion(), version)) {
