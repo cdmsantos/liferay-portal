@@ -213,7 +213,7 @@ renderResponse.setTitle((recordSet == null) ? LanguageUtil.get(request, "new-for
 							localizedName: <%= ddlFormAdminDisplayContext.getFormLocalizedName() %>,
 							defaultLanguageId: '<%= ddlFormAdminDisplayContext.getDefaultLanguageId() %>',
 							editingLanguageId: '<%= ddlFormAdminDisplayContext.getDefaultLanguageId() %>',
-							editForm: <portlet:namespace />form,
+							editForm: form,
 							formBuilder: Liferay.component('<portlet:namespace />formBuilder'),
 							namespace: '<portlet:namespace />',
 							published: !!<%= ddlFormAdminDisplayContext.isFormPublished() %>,

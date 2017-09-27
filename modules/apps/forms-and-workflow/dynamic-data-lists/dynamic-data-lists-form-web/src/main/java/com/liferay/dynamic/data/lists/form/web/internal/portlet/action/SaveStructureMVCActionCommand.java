@@ -15,11 +15,11 @@
 package com.liferay.dynamic.data.lists.form.web.internal.portlet.action;
 
 import com.liferay.dynamic.data.lists.form.web.constants.DDLFormPortletKeys;
-import com.liferay.dynamic.data.lists.form.web.internal.util.DDLFormBuilderContextToDDMForm;
-import com.liferay.dynamic.data.lists.form.web.internal.util.DDLFormBuilderContextToDDMFormLayout;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.mapping.exception.StructureDefinitionException;
 import com.liferay.dynamic.data.mapping.exception.StructureLayoutException;
+import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormContextDeserializer;
+import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormContextDeserializerRequest;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
@@ -130,11 +130,11 @@ public class SaveStructureMVCActionCommand extends BaseMVCActionCommand {
 		throws PortalException {
 
 		try {
-			String serializedFormBuilderContext = ParamUtil.getString(
+			String serializedFormContext = ParamUtil.getString(
 				portletRequest, "serializedFormBuilderContext");
 
-			return _ddlFormBuilderContextToDDMForm.deserialize(
-				serializedFormBuilderContext);
+			return ddlFormBuilderContextToDDMForm.deserialize(
+				DDMFormContextDeserializerRequest.with(serializedFormContext));
 		}
 		catch (PortalException pe) {
 			throw new StructureDefinitionException(pe);
@@ -145,11 +145,11 @@ public class SaveStructureMVCActionCommand extends BaseMVCActionCommand {
 		throws PortalException {
 
 		try {
-			String serializedFormBuilderContext = ParamUtil.getString(
+			String serializedFormContext = ParamUtil.getString(
 				portletRequest, "serializedFormBuilderContext");
 
-			return _ddlFormBuilderContextToDDMFormLayout.deserialize(
-				serializedFormBuilderContext);
+			return ddlFormBuilderContextToDDMFormLayout.deserialize(
+				DDMFormContextDeserializerRequest.with(serializedFormContext));
 		}
 		catch (PortalException pe) {
 			throw new StructureLayoutException(pe);
@@ -176,16 +176,21 @@ public class SaveStructureMVCActionCommand extends BaseMVCActionCommand {
 
 		return localizedMap;
 	}
+	
+	@Reference(
+		target = "(dynamic.data.mapping.form.builder.context.deserializer.type=form)"
+	)
+	protected DDMFormContextDeserializer<DDMForm>
+		ddlFormBuilderContextToDDMForm;
+	
+	@Reference(
+		target = "(dynamic.data.mapping.form.builder.context.deserializer.type=formLayout)"
+	)
+	protected DDMFormContextDeserializer<DDMFormLayout>
+		ddlFormBuilderContextToDDMFormLayout;
 
 	@Reference
 	protected JSONFactory jsonFactory;
-
-	@Reference
-	private DDLFormBuilderContextToDDMForm _ddlFormBuilderContextToDDMForm;
-
-	@Reference
-	private DDLFormBuilderContextToDDMFormLayout
-		_ddlFormBuilderContextToDDMFormLayout;
 
 	@Reference
 	private DDMStructureService _ddmStructureService;
