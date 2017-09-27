@@ -108,28 +108,18 @@ renderResponse.setTitle((structure == null) ? LanguageUtil.get(request, "new-fie
 				<aui:button cssClass="btn-lg" href="<%= redirect %>" name="cancelButton" type="cancel" />
 			</aui:button-row>
 		</div>
-
-		<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="getDataProviderInstances" var="getDataProviderInstancesURL" />
-
-		<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="getDataProviderParametersSettings" var="getDataProviderParametersSettings" />
-
-		<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="getFieldSettingsDDMFormContext" var="getFieldSettingsDDMFormContext" />
-
-		<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="getFunctions" var="getFunctions" />
-
-		<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="getRoles" var="getRoles" />
+		
+		<liferay-form:ddm-form-builder
+			ddmStructureId="<%= ddlFormAdminDisplayContext.getDDMStrucutureId() %>"
+			defaultLanguageId="<%= ddlFormAdminDisplayContext.getDefaultLanguageId() %>"
+			editingLanguageId="<%= ddlFormAdminDisplayContext.getDefaultLanguageId() %>"
+			refererPortletNamespace="<%= liferayPortletResponse.getNamespace() %>"
+			showPagination="<%= Boolean.FALSE %>"
+		/>
 
 		<aui:script>
 			Liferay.namespace('DDL').Settings = {
-				evaluatorURL: '<%= ddlFormAdminDisplayContext.getDDMFormContextProviderServletURL() %>',
-				functionsMetadata: <%= ddlFormAdminDisplayContext.getSerializedDDMExpressionFunctionsMetadata() %>,
-				getDataProviderInstancesURL: '<%= getDataProviderInstancesURL.toString() %>',
-				getDataProviderParametersSettingsURL: '<%= getDataProviderParametersSettings.toString() %>',
-				getFieldTypeSettingFormContextURL: '<%= getFieldSettingsDDMFormContext.toString() %>',
-				getFunctionsURL: '<%= getFunctions.toString() %>',
-				getRolesURL: '<%= getRoles.toString() %>',
-				portletNamespace: '<portlet:namespace />',
-				showPagination: false
+				portletNamespace: '<portlet:namespace />'
 			};
 
 			var initHandler = Liferay.after(
@@ -181,12 +171,12 @@ renderResponse.setTitle((structure == null) ? LanguageUtil.get(request, "new-fie
 					'formPortlet',
 					new Liferay.DDL.Portlet(
 						{
-							context: <%= ddlFormAdminDisplayContext.getFormBuilderContext() %>,
 							localizedDescription: <%= ddlFormAdminDisplayContext.getFormLocalizedDescription() %>,
 							localizedName: <%= ddlFormAdminDisplayContext.getFormLocalizedName() %>,
 							defaultLanguageId: '<%= ddlFormAdminDisplayContext.getDefaultLanguageId() %>',
 							editingLanguageId: '<%= ddlFormAdminDisplayContext.getDefaultLanguageId() %>',
 							editForm: form,
+							formBuilder: Liferay.component('<portlet:namespace />formBuilder'),
 							namespace: '<portlet:namespace />',
 							translationManager: Liferay.component('<portlet:namespace />translationManager'),
 							view: 'fieldSets'
