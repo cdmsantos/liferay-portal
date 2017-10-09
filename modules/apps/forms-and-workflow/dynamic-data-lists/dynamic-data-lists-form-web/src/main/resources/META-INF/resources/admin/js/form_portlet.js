@@ -151,7 +151,7 @@ AUI.add(
 								instance.one('#publish').on('click', A.bind('_onPublishButtonClick', instance)),
 								instance.one('#publishIcon').on('click', A.bind('_onPublishIconClick', instance)),
 								instance.one('#showForm').on('click', A.bind('_onFormButtonClick', instance)),
-								instance.one('#showRules').on('click', A.bind('_onRulesButtonClick', instance)),
+								instance.one('#showRules').on('click', A.bind('_onRulesButtonClick', instance))
 							);
 
 							var autosaveInterval = Liferay.DDL.Settings.autosaveInterval;
